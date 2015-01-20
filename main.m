@@ -80,7 +80,7 @@ AllLocalCA_WeightPairs = zeros(2,SizeofSwarm,length(ImageFiles)); %CA,Fitness ar
     temp = getMaskCA(bestParameters);
     CorrectFilterOutputsforTraining = reshape(temp',[1,9]);
     if(i == 1)
-       FilterGeneratorValues(length(ImageFiles)) = struct('ImageFile', im,'GroundTruthFile',imgGT,'GroundTruthNumber',bestParameters,'FilterMask',temp,'NNOutput',CorrectFilterOutputsforTraining,'BDM',num2str(bestPosition),'OutputImage',bestCAEdgeImage); 
+        FilterGeneratorValues(length(ImageFiles)) = struct('ImageFile', im,'GroundTruthFile',imgGT,'GroundTruthNumber',bestParameters,'FilterMask',temp,'NNOutput',CorrectFilterOutputsforTraining,'BDM',num2str(bestPosition),'OutputImage',bestCAEdgeImage); 
     end
     FilterGeneratorValues(i) = struct('ImageFile', im,'GroundTruthFile',imgGT,'GroundTruthNumber',bestParameters,'FilterMask',temp,'NNOutput',CorrectFilterOutputsforTraining,'BDM',num2str(bestPosition),'OutPutImage',bestCAEdgeImage);
     close all;
