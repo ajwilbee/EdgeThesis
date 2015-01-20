@@ -39,7 +39,7 @@ local_best_fitness  = current_fitness;
 [global_best_fitness,g] = min(local_best_fitness) ;
 
 for i=1:n
-    globl_best_position(:,i) = local_best_position(:,g);
+    globl_best_position(:,i) = local_best_position(:,g);%fix me
 end
 % velocity = cns *(velocity + c1*(R1.*(local_best_position-current_position)) + c2*(R2.*(globl_best_position-current_position)));
 % 
@@ -51,7 +51,13 @@ end
 % current_position(3,:)
 % current_position = current_position + velocity ;
 % current_position = [round(current_position(1,:)); abs(current_position(2,:)); round(current_position(3,:))] ;
-current_position = [abs(round(current_position(1,:))); abs(current_position(2,:)); abs(round(current_position(3,:)))] ;
+
+if(length(current_position) == 1)
+    
+current_position = [abs(round(current_position(3,:)))] ;
+
+end
+
 %     
 %     if (round(current_position(3,:))>511) | (current_position(1,:)>150) | (current_position(2,:)>1) 
 %         current_position(3,:)
@@ -69,6 +75,7 @@ iter = 0 ;
 while  ( iter < iteration )
     iter = iter + 1;
     disp(iter)
+
     for i = 1:n
         temp = (fit_ness(imgGrey, Img,current_position(:,i)));
 
@@ -93,7 +100,7 @@ while  ( iter < iteration )
     
     
     if (current_global_best_fitness < global_best_fitness)
-        global_best_fitness = current_global_best_fitness
+        global_best_fitness = current_global_best_fitness;
         
         for i=1:n
             globl_best_position(:,i) = local_best_position(:,g);
@@ -101,22 +108,27 @@ while  ( iter < iteration )
         
     end
     
-    if(local_best_position(3,:)>511)
-        test = 0;
-    end
+    
+        if(local_best_position(1,:)>511)
+            test = 0;
+        end
+    
+   
     % Global fitness values
 %     global_best_fitness
 %     k=globl_best_position
     
-    
+
+   
     velocity = cns *(velocity + c1*(R1.*(local_best_position-current_position)) + c2*(R2.*(globl_best_position-current_position)));
     current_position = current_position + velocity;
-    current_position = [abs(round(current_position(1,:))); abs(current_position(2,:)); abs(round(current_position(3,:)))] ;
-    if (sum(round(current_position(3,:))>511)>0 | sum((current_position(1,:)>150))>0 | sum((current_position(2,:)>1))>0) 
-        current_position(1,:)=45;
-        current_position(3,:)=250;
-        current_position(2,:)=0.5; 
-    end
+    current_position = abs(round(current_position(1,:))) ;
+    current_position(current_position(1,:)>511)=250
+%     if (sum(round(current_position(1,:))>511)>0) 
+% 
+%         current_position(1,:)=250;
+% 
+%     end
     % x=current_position(1,:);
     % y=current_position(2,:);
     

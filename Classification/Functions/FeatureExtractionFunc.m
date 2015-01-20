@@ -1,12 +1,14 @@
-function [ output ] = FeatureExtractionFunc( ImageFilePath)
+function [ output ] = FeatureExtractionFunc( ImageFiles)
 %UNTITLED5 Summary of this function goes here
-%   ImageFilePath - the path to a folder which contains all of the images
-%   which are to be used for training
+%   ImageFiles - the FilterGeneratorValues from the filter generator portion
+%   of the program, this structure array contains all of the images used for this
+%   particular experiment. 
+%
+%   features are extracted from all of these images which are used for
+%   training
 
     depthPyramids = 9;
-    %ImageFilePaths = {'C:\Users\ajw4388\Pictures\abbey'};%;'C:\Users\ajw4388\Pictures\bedroom';'C:\Users\ajw4388\Pictures\kitchen';'C:\Users\ajw4388\Pictures\playground'};
-
-        addpath(ImageFilePath);
+    
 
     direction = 'reduce';
 
@@ -30,11 +32,11 @@ function [ output ] = FeatureExtractionFunc( ImageFilePath)
 
     close all
 
-        ImageFiles = dir(fullfile(ImageFilePath, '*.jpg'));
+      
 
-        gistfinal = cell(length(ImageFiles),1);
-        for j = 1:length(ImageFiles)
-            im = imread(ImageFiles(j).name);
+       gistfinal = cell(length(ImageFiles),1);
+       for j = 1:length(ImageFiles)
+            im = ImageFiles.ImageFile;
             if(size(im,3) == 3)
                 [ Pyramids,RedChannel,GreenChannel,BlueChannel,YellowChannel,IntensityChannel ] = ChannelCreation(im, depthPyramids,direction );
                 [ RG,BY,I ] = CenterSurround( RedChannel,GreenChannel,BlueChannel,YellowChannel,IntensityChannel, CenterSurroundFineMax, CenterSurroundFineMin, CenterSurroundCourseDistance );

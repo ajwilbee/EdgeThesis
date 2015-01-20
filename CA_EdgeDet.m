@@ -6,8 +6,9 @@
 clc
 close all;
 clear all;
-ImageFilesPath = 'C:\Users\ajw4388\Documents\Thesis\BSR\BSDS500\data\images\test';
-GroundTruthFilesPath = 'C:\Users\ajw4388\Documents\Thesis\BSR\BSDS500\data\groundTruth\test';
+%set up the input and output file locations
+ImageFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\images\test';
+GroundTruthFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\groundTruth\test';
 ImageSaveFolderName = 'AllRules_AllImages'; % make this ahead of time
 ImageSaveFolder = [pwd '\' ImageSaveFolderName];
 addpath(ImageFilesPath,GroundTruthFilesPath);
