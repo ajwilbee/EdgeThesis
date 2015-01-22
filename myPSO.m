@@ -52,11 +52,11 @@ end
 % current_position = current_position + velocity ;
 % current_position = [round(current_position(1,:)); abs(current_position(2,:)); round(current_position(3,:))] ;
 
-if(length(current_position) == 1)
-    
-current_position = [abs(round(current_position(3,:)))] ;
 
-end
+    
+current_position = [abs(round(current_position))] ;
+
+
 
 %     
 %     if (round(current_position(3,:))>511) | (current_position(1,:)>150) | (current_position(2,:)>1) 
