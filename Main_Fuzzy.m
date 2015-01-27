@@ -78,7 +78,7 @@ AllFilters = 0;
             end
             
             close all;
-            AllFilters(count) = bestParameters(3);
+            AllFilters(count) = bestParameters;
             count = count +1;
     end
  end
