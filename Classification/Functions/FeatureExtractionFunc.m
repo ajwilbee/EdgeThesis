@@ -36,7 +36,7 @@ function [ output ] = FeatureExtractionFunc( ImageFiles)
 
        gistfinal = cell(length(ImageFiles),1);
        for j = 1:length(ImageFiles)
-            im = ImageFiles.ImageFile;
+            im = ImageFiles{j};
             if(size(im,3) == 3)
                 [ Pyramids,RedChannel,GreenChannel,BlueChannel,YellowChannel,IntensityChannel ] = ChannelCreation(im, depthPyramids,direction );
                 [ RG,BY,I ] = CenterSurround( RedChannel,GreenChannel,BlueChannel,YellowChannel,IntensityChannel, CenterSurroundFineMax, CenterSurroundFineMin, CenterSurroundCourseDistance );

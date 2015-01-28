@@ -66,7 +66,7 @@ for x = 1:size(AllImages,1)
     
 end
 AllFilters = cell(size(AllImages,1),1);
- for i=1:5%length(ImageFiles)
+ for i=1:1:size(AllImages,1)
      
      %can let run through all of them for times sake on early testing only
      %running until all are solved better than canny and sobel, this can be
@@ -100,6 +100,8 @@ AllFilters = cell(size(AllImages,1),1);
             AllFilters{count} = bestParameters;
             count = count +1;
     end
+    save(strcat([ImageSaveFolder '\' ['AllFilters' ] ]),'AllFilters'); %filters that solve images
+ save(strcat([ImageSaveFolder '\' ['AllImages' ] ]),'AllImages'); % which filter sovles which image
  end
  
  save(strcat([ImageSaveFolder '\' ['AllFilters' ] ]),'AllFilters'); %filters that solve images

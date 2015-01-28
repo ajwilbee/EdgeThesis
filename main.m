@@ -6,8 +6,8 @@ close all
 %clear all
 clc
 %%
-ImageFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\images\test';
-GroundTruthFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\groundTruth\test';
+ImageFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\images\Train';
+GroundTruthFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\groundTruth\Train';
 ImageSaveFolderName = 'Non_Fuzzy_PSO_TrainedCAFilters'; % make this ahead of time
 ImageSaveFolder = [pwd '\' ImageSaveFolderName];
 load('MatFileResults\cannySobelBDM_DefaultSettings_AllGT.mat');
@@ -18,7 +18,7 @@ ImageFiles = dir(fullfile(ImageFilesPath, '*.jpg'));
 GroundTruthFiles = dir(fullfile(GroundTruthFilesPath, '*.mat'));
 
 %%
-iteration =100;
+iteration =1;
 %starting point for PSO: 1-> division offset 2-> fuzzy boundery 3-> CA rule
 parameters = [23;124;321;452;35;326;168;245;410;203;
               123;24;121;45;355;56;18;45;386;178;];%last parameter must be the CA neighborhood rule
@@ -35,7 +35,7 @@ coef =[.73 c1 c2];% velocity modifier
 SizeofSwarm = size (parameters ,1);
 AllLocalCA_WeightPairs = zeros(2,SizeofSwarm,length(ImageFiles)); %CA,Fitness are dimension 1
 
- for i=1:length(ImageFiles)
+ for i=1:5%length(ImageFiles)
      disp(i);
     imFullName =ImageFiles(i).name(1:end-4);
     disp(imFullName);
@@ -43,7 +43,7 @@ AllLocalCA_WeightPairs = zeros(2,SizeofSwarm,length(ImageFiles)); %CA,Fitness ar
     imgGrey =double(im2bw(rgb2gray(im),0.4));
     load(GroundTruthFiles(i).name);
     
-    for whichGT = 1:length(groundTruth)
+    for whichGT = 1:1%length(groundTruth)
         imgGT = double(groundTruth{whichGT}.Boundaries);
         %mkdir(ImageSaveFolderName,['GroundTruth', num2str(whichGT)]);
         mkdir([ImageSaveFolderName '\GroundTruth', num2str(whichGT)],imFullName);
