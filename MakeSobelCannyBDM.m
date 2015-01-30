@@ -27,11 +27,11 @@ GroundTruthFiles = dir(fullfile(GroundTruthFilesPath, '*.mat'));
                  ce=im2double(canny_edge);
                  [val_sobel, dMap] = BDM(imgGT,se,'x', 2, 'euc');
                  [val_canny, dMap] = BDM(imgGT,ce,'x', 2, 'euc');
-                 CannySobelBDM(i,whichGT) = struct('ImageFile', im,'GroundTruthFile',...
+                 CannySobelBDM(i,whichGT) = struct('ImageName',imFullName,'ImageFile', im,'GroundTruthFile',...
                      imgGT,'GroundTruthNumber',whichGT,'BDM_Sobel',val_sobel,'BDM_Canny',val_canny,...
                      'OutputImage_Sobel',sobel_edge,'OutputImage_Canny',canny_edge);   
             end
            
       
   end
-    
+    save('CannySobelBDMTest','CannySobelBDM','-v7.3')

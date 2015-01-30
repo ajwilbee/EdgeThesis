@@ -17,21 +17,21 @@ ImageSaveFolderName = 'Fuzzy_PSO_AllImages_FilterGeneration_GT1'; % make this ah
 ImageSaveFolder = [pwd '\' ImageSaveFolderName];
 mkdir(ImageSaveFolder);
 % load('CannySobelBDM.mat')%all image files and ground truths come from here to maintain consistancy
-addpath(ImageFilesPath,GroundTruthFilesPath);
-ImageFiles = dir(fullfile(ImageFilesPath, '*.jpg'));
-GroundTruthFiles = dir(fullfile(GroundTruthFilesPath, '*.mat'));
+% addpath(ImageFilesPath,GroundTruthFilesPath);
+% ImageFiles = dir(fullfile(ImageFilesPath, '*.jpg'));
+% GroundTruthFiles = dir(fullfile(GroundTruthFilesPath, '*.mat'));
 
 %%
 iteration =3;
 %starting point for PSO: 1-> division offset 2-> fuzzy boundery 3-> CA rule
 parameters = [60 0.3 23;79 1 124; 105 0 321; 23 0.3 452;78 0.01 35;92 0.6 326;73 0.43 168;86 0.87 245; 112 0.54 410;124 0.67 203;
               51 0.23 123;69 0.89 24; 101 0.34 121; 39 0.4 45;71 0.19 355;97 0.73 56;134 0.3 18;35 0.71 45;68 0.47 386;82 0.712 178;];
-          imFullName =ImageFiles(1).name(1:end-4);
-    im1 = imread(ImageFiles(1).name);
+%           imFullName =ImageFiles(1).name(1:end-4);
+%     im1 = imread(ImageFiles(1).name);
 size(parameters);
 c1 =2.01;% velocity modifier
 c2 = 2.01;% velocity modifier
-[row,col] = size (im1);
+% [row,col] = size (im1);
 coef =[.73 c1 c2];% velocity modifier
 whichGT = 2;
 %dbstop in fit_ness
@@ -44,12 +44,15 @@ whichGT = 2;
 %                                  2) its ground truth,
 %                                  3) the index of the filter in the filter array, and its corrisponding BDM,
 %                                  4) the BDM of the fit from canny and sobel 
-AllImages = cell(length(ImageFiles),4);
+%                                  5) Image Name
+AllImages = cell(size(CannySobelBDM,1),5);
 
-for i=1:length(ImageFiles)
+for i=1:size(CannySobelBDM,1)
 %      imFullName =ImageFiles(i).name(1:end-4);
-     AllImages{i,1} = double(rgb2gray(CannySobelBDM(x).ImageFile));
-     AllImages{i,2} = double(CannySobelBDM(x).GroundTruthFile);
+     AllImages{i,1} = double(rgb2gray(CannySobelBDM(i).ImageFile));
+     AllImages{i,2} = double(CannySobelBDM(i).GroundTruthFile);
+     AllImages{i,5} = CannySobelBDM(i).ImageName;
+     AllImages{i,6} = CannySobelBDM(i).ImageFile;
 end
 
 % this is greedy and will need to be revisited
@@ -74,14 +77,16 @@ AllFilters = cell(size(AllImages,1),1);
     if(isempty(AllImages{i,3}))
             imgGrey = AllImages{i,1};
             imgGT = AllImages{i,2};
-            mkdir(ImageSaveFolderName,imFullName);
+            mkdir(ImageSaveFolderName,AllImages{i,5});
 
             [bestParameters, best_BDM, localPositions,localFitness ] = myFuzzyPSO(imgGrey, imgGT, coef, iteration, parameters);
 
 
             [bestPosition, bestCAEdgeImage] = fuzzy_fitness(imgGrey,imgGT, bestParameters); 
-            imwrite(bestCAEdgeImage, strcat([ImageSaveFolder '\' imFullName '\'],'bestCAEdgeImage.jpg'));
-            
+            imwrite(bestCAEdgeImage, strcat([ImageSaveFolder '\' AllImages{i,5} '\'],'bestCAEdgeImage.jpg'));
+            %the trained filter must be paired with the filter it was
+            %trained to
+            AllImages{i,3}(end+1,:) = [count,bestPosition];
             
             
             %find a reduced set of filters which will solve the set
@@ -90,7 +95,9 @@ AllFilters = cell(size(AllImages,1),1);
                     tempImgGrey =AllImages{iter,1};       
                     tempImgGT = AllImages{iter,2};
                     BDM = fuzzy_fitness(tempImgGrey,tempImgGT, bestParameters); 
-                    if(BDM < AllImages{iter,4})
+                    %dont double count the Filter Trained in the current
+                    %iteration
+                    if(BDM < AllImages{iter,4} && iter ~= i)
                         AllImages{iter,3}(end+1,:) = [count,BDM];
                     end
                

@@ -6,8 +6,7 @@ OccurancesFilterWithDifferentFuzzyBoundary = zeros(512,2);
 OccurancesFilterWithDifferentFuzzyBoundary(:,1) = (1:1:512);
 for x =1: size(AllImages,1)
    temp = AllImages{x,1};
-   AllImages{x,1} =AllFilters(temp);%,3
-   AllImages{x,2} =AllFilters(temp);%,3
+   AllImages{x,2} =AllFilters{temp}(3);%,3
    OccurancesFilterSolveImage(AllImages{x,1},2) = OccurancesFilterSolveImage(AllImages{x,1},2) + 1;
 end
 for x =1:length(AllFilters)
@@ -19,4 +18,4 @@ end
 
 csvwrite('OccurancesFilterWithDifferentFuzzyBoundary.csv',OccurancesFilterWithDifferentFuzzyBoundary)
 csvwrite('OccurancesFilterSolveImage.csv',OccurancesFilterSolveImage)
-csvwrite('ImagePairedWithFilter',AllImages);
+csvwrite('ImagePairedWithFilter.csv',AllImages);
