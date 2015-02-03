@@ -71,7 +71,7 @@ while(KeepGoing)
     FinalFilters(remove) = 1;
     KeepGoing = 0;
     for x = 1:size(AllImages,1)
-         if( size(AllImages{x,3},1) > 1)
+         if( size(AllImages{x,3},1) > 0)
              KeepGoing = 1;
          end
     end

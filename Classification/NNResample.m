@@ -11,8 +11,8 @@ function [AllInputs,AllOutputs] = NNResample( ReducedFeatures, AllTargets, Layer
     NumInput = size(ReducedFeatures,1);
 
     SamplesNeeded = NumHidden*NumInput+NumHidden*NumOutput+NumHidden+NumOutput;
-    AllInputs = zeros(83,SamplesNeeded);
-    AllOutputs = zeros(9,SamplesNeeded);
+    AllInputs = zeros(NumInput,SamplesNeeded);
+    AllOutputs = zeros(NumOutput,SamplesNeeded);
 
     ScaleFactor = size(AllTargets,2);
     %sample with replacement of all values in the sample space

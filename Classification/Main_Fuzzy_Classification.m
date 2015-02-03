@@ -11,13 +11,13 @@
 
 %load('C:\Users\ajw4388\Documents\MATLAB\TestOutputFile.mat');
 %FilterGeneratorValues = outputValues;
-
+  GT = 1
   InputImages = cell(size(AllImages,1),1);
   AllTargetsCell = cell(size(AllImages,1),1);
   
     for x = 1:size(AllImages,1)
         
-            InputImages{x} = AllImages{x,1};
+            InputImages{x} = AllImages{x,6};
             AllTargetsCell{x} =AllImages{x,7} ;
             
         
@@ -33,7 +33,7 @@
         ReducedFeatures = ((AllFeatures'-meanMat)*W)';
 
         % create the target values from input data
-        AllTargets = cell2mat(AllTargetsCell')';
+        AllTargets = cell2mat(AllTargetsCell');
 
         Sizes = [25 50 100];
         for sizeiter = 1:length(Sizes)
