@@ -1,12 +1,16 @@
+function [ResultingEdgeImage,BetterPerformance] = FuzzyRun(ResultNN,AllFilters,dirName)
+
 %fuzzy System
 % takes the NN from the fuzzy system and applies it to input images
 % takes the Proper CannySobelBDMFile
 % takes correct ResultNNValidation File to get the ResultNN struct
 % takes allFilter File from Step2
 GT = 1;
-dirName = 'Feb3FuzzyFilterFinalResultsFirstTrial';
-mkdir(dirName)
 
+
+
+
+load('C:\Users\ajw4388\Documents\MATLAB\Thesis_Code\CannySobelBDM\CannySobelBDMValidation.mat')  
     clear AllImages AllTargetsCell
     count = 1;
     clear AllImages AllTargetsCell names SobelEdgeImage SobelBDM CannyEdgeImage CannyBDM
@@ -48,19 +52,22 @@ mkdir(dirName)
         subplot(2,2,2);imshow(EdgeImage);title(['Test BDM = ' num2str(BDM)]);
         subplot(2,2,3);imshow( SobelEdgeImage{x});title(['Sobel BDM = ' num2str(SobelBDM(x))]);
         subplot(2,2,4);imshow( CannyEdgeImage{x});title(['Canny BDM = ' num2str(CannyBDM(x))]);
-        saveas(figure(1),strcat(dirName, '\', names{x}, 'GroundTruth_', num2str(GT)),'jpg')
+        saveas(figure(1),strcat(dirName, '/', names{x}, 'GroundTruth_', num2str(GT)),'jpg')
         ResultingEdgeImage(x) = struct('BDM',BDM,'EdgeImage', EdgeImage,...
             'GroundTruth',AllTargetsCell{x},'Original',AllImages{x},'ImageName', names{x},...
             'SobelEdgeImage', SobelEdgeImage{x},'SobelBDM',SobelBDM(x),...
-            'CannyEdgeImage',CannyEdgeImage{x},'CannyBDM',CannyBDM(x) );
-        if(BDM >CannyBDM(x) && BDM >SobelBDM(x))
+            'CannyEdgeImage',CannyEdgeImage{x},'CannyBDM',CannyBDM(x),'Filter',Filter );
+        %if BDM is lower than the performance was better
+        if(BDM <CannyBDM(x) && BDM <SobelBDM(x))
             BetterPerformance(x) = 1;
         else
             BetterPerformance(x) = 0;
         end
     end
-
+    
     save([dirName '/_ResultingEdgeImage_GT' num2str(GT)], 'ResultingEdgeImage');
-     save([dirName '/_BetterPerformance_GT' num2str(GT)], 'BetterPerformance');%one if yes 0 if no
+    save([dirName '/_BetterPerformance_GT' num2str(GT)], 'BetterPerformance');%one if yes 0 if no
+     
+end
 
     

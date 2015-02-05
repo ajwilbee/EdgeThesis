@@ -8,6 +8,9 @@
 %identified. finally these filters are encoded for use in the NN
 %remove empty filter counts
 clear remove
+GT = 1;
+StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\FuzzySystem\MainFuzzyOutput_GT1_Test_1\Run1';
+mkdir(StorageLocation);
 for x = 1:size(AllFilters,1)
     
     if isempty(AllFilters{x})
@@ -97,6 +100,17 @@ end
 
 
 AllFilters(~FinalFilters) = [];
+Sizes = [25 50 100];
+save([StorageLocation,'\ChosenFilters'], 'AllFilters')
+      
+for sizeiter = 1:length(Sizes)
+    dirName = [StorageLocation '\FinalResults_NNSize_' num2str(Sizes(sizeiter)),'_GroundTruth_' num2str(GT)];
+    mkdir(dirName)
+    ResultNN = Main_Fuzzy_Classification(AllImages,sizeiter,dirName);
+    save([dirName,'\NeuralNetwork'], 'ResultNN');    
+    [ResultingEdgeImage,BetterPerformance] = FuzzyRun(ResultNN,AllFilters,dirName);    
+end
+save([StorageLocation,'\ChosenFilters'], 'AllFilters')
 % SingularFilters = 0;
 
 

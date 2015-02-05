@@ -11,6 +11,9 @@
 
 %load('C:\Users\ajw4388\Documents\MATLAB\TestOutputFile.mat');
 %FilterGeneratorValues = outputValues;
+
+StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\NonFuzzySystem\Non_Fuzzy_PSO_TrainedCAFilters_Jan22_Train\Run1';
+mkdir(StorageLocation);
 for GT = 1:size(FilterGeneratorValues,2)
     clear AllImages AllTargetsCell
     count = 1;
@@ -50,8 +53,12 @@ for GT = 1:size(FilterGeneratorValues,2)
 
              performance = perform(net, output,AllTargets);
              plotconfusion(AllTargets, output);
+             dirName = [StorageLocation '\FinalResults_NNSize_' num2str(Sizes(sizeiter)),'_GroundTruth_' num2str(GT)];
+             mkdir(dirName)
              ResultNN =  struct('InputFeatures',ReducedFeatures,'OutputValues',AllTargets,'NeuralNetwork',net,'Mean',mVal,'Variance',mVar,'PCATransformationMatrix',W,'LayerSize',LayerSize);
-             save(['ResultNNValidation_LayerSize' num2str(LayerSize) '_GroundTruth_' num2str(GT)], 'ResultNN');
+             
+             [ResultingEdgeImage,BetterPerformance] = FilterGenerator(ResultNN,dirName,FilterGeneratorValues);
+             save([dirName,'\NeuralNetwork'], 'ResultNN');
         end
     end
 end

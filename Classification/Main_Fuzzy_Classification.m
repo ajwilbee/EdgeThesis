@@ -1,3 +1,4 @@
+function [ResultNN] = Main_Fuzzy_Classification(AllImages,Size,dirName)
 %This is the Main Function for the fuzzy input data
 %The filter generator will create a file which contains an array of
 %structures, these stuctures will have the following fields
@@ -35,24 +36,24 @@
         % create the target values from input data
         AllTargets = cell2mat(AllTargetsCell');
 
-        Sizes = [25 50 100];
-        for sizeiter = 1:length(Sizes)
-            LayerSize = Sizes(sizeiter);
-            [ReducedFeatures, AllTargets]=NNResample( ReducedFeatures, AllTargets, LayerSize );
-            %  net = feedforwardnet(LayerSize);
-            %  net = train(net,ReducedFeatures,AllTargets);
+       
+        LayerSize = Size;
+        [ReducedFeatures, AllTargets]=NNResample( ReducedFeatures, AllTargets, LayerSize );
+        %  net = feedforwardnet(LayerSize);
+        %  net = train(net,ReducedFeatures,AllTargets);
 
 
-             net = patternnet(LayerSize,'trainscg','crossentropy');
-             
-             net = train(net,ReducedFeatures,AllTargets);
+         net = patternnet(LayerSize,'trainscg','crossentropy');
 
-             output = net(ReducedFeatures);
+         net = train(net,ReducedFeatures,AllTargets);
 
-             performance = perform(net, output,AllTargets);
-             plotconfusion(AllTargets, output);
-             ResultNN =  struct('InputFeatures',ReducedFeatures,'OutputValues',AllTargets,'NeuralNetwork',net,'Mean',mVal,'Variance',mVar,'PCATransformationMatrix',W,'LayerSize',LayerSize);
-             save(['ResultNNValidation_LayerSize' num2str(LayerSize) '_GroundTruth_' num2str(GT)], 'ResultNN');
-        end
-    
+         output = net(ReducedFeatures);
+         figure(1)
+         performance = perform(net, output,AllTargets);
+         plotconfusion(AllTargets, output);
+         saveas(figure(1),strcat(dirName, '/NNConfusionPlot', num2str(LayerSize)),'jpg')
+         ResultNN =  struct('InputFeatures',ReducedFeatures,'OutputValues',AllTargets,'NeuralNetwork',net,'Mean',mVal,'Variance',mVar,'PCATransformationMatrix',W,'LayerSize',LayerSize);
+         
+        
+end
 
