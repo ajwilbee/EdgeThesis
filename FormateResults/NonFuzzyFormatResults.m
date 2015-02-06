@@ -15,4 +15,4 @@ Filters = zeros(length(ResultingEdgeImage),1);
     end
 
 out = [BDM Sobel Canny Filters]; 
-csvwrite('ResultPlot.csv',out);
+csvwrite('ResultPlotGT3.csv',out);

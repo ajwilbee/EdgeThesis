@@ -44,7 +44,10 @@ load('C:\Users\ajw4388\Documents\MATLAB\Thesis_Code\CannySobelBDM\CannySobelBDMV
     output = net(ReducedFeatures)>0;
     figure(1);title('BDM Comparison');
     for x = 1:size(AllImages,2)
-        FilterIndex = bin2dec(num2str(output(:,1))');%get number for CA filter to use
+        FilterIndex = bin2dec(num2str(output(:,x))');%get number for CA filter to use
+        if(FilterIndex > length(AllFilters))
+           FilterIndex = length(AllFilters)
+        end
         Filter = AllFilters{FilterIndex};
         [BDM, EdgeImage] = fuzzy_fitness(double(rgb2gray(AllImages{x})),AllTargetsCell{x}, Filter);
 

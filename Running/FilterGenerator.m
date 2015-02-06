@@ -38,7 +38,7 @@ mkdir(dirName)
             output = net(ReducedFeatures)>0;
             figure(1);title('BDM Comparison');
             for x = 1:size(AllImages,2)
-                Filter = bin2dec(num2str(output(:,1))');%get number for CA filter to use
+                Filter = bin2dec(num2str(output(:,x))');%get number for CA filter to use
                 [BDM, EdgeImage] = fit_ness(double(im2bw(rgb2gray(AllImages{x}),0.4)),AllTargetsCell{x}, Filter);
 
                 subplot(2,2,1);imshow(AllTargetsCell{x});title(['GroundTruth ' num2str(GT)]);

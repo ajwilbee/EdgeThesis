@@ -9,7 +9,7 @@
 %remove empty filter counts
 clear remove
 GT = 1;
-StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\FuzzySystem\MainFuzzyOutput_GT1_Test_1\Run1';
+StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\FuzzySystem\Fuzzy_PSO_AllImages_FilterGeneration_GT1_feb3_Train_100Iter\Run1';
 mkdir(StorageLocation);
 for x = 1:size(AllFilters,1)
     
@@ -44,6 +44,7 @@ KeepGoing = logical(1);
 
 while(KeepGoing)
     FinalCount = zeros(length(AllFilters),1);
+    %count how many times each filter solves an image
     for x = 1:size(AllImages,1)
         for y = 1: size(AllImages{x,3},1)
             FinalCount(AllImages{x,3}(y,1)) = FinalCount(AllImages{x,3}(y,1))+1;
@@ -51,9 +52,11 @@ while(KeepGoing)
     end
     c = 1;
 
+    %zero out the index of the most effective filter
     remove = find(FinalCount == max(FinalCount),1);
     FinalCount(remove) = 0;
     % SingularFilters = 0;
+    
     for x = 1:size(AllImages,1)
         kill = logical(ones(size(AllImages{x,3},1),1));
         go = 0;
