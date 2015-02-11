@@ -71,6 +71,26 @@ load('C:\Users\ajw4388\Documents\MATLAB\Thesis_Code\CannySobelBDM\CannySobelBDMV
     save([dirName '/_ResultingEdgeImage_GT' num2str(GT)], 'ResultingEdgeImage');
     save([dirName '/_BetterPerformance_GT' num2str(GT)], 'BetterPerformance');%one if yes 0 if no
      
+    BDM = zeros(length(ResultingEdgeImage),1);
+    Sobel = zeros(length(ResultingEdgeImage),1);
+    Canny = zeros(length(ResultingEdgeImage),1);
+    Filters = zeros(length(ResultingEdgeImage),3);
+        for y = 1: length(ResultingEdgeImage)
+
+               BDM(y) = ResultingEdgeImage(y).BDM;
+
+               Sobel(y) = ResultingEdgeImage(y).SobelBDM;
+
+               Canny(y) = ResultingEdgeImage(y).CannyBDM;
+
+               Filters(y,:) = ResultingEdgeImage(y).Filter;
+
+        end
+        A = cell2mat(AllFilters')';
+        out = [BDM Sobel Canny Filters]; 
+    csvwrite([dirName,'\ResultPlot.csv'],out);
+    csvwrite([dirName,'\ChosenFilters.csv'],A);
+    
 end
 
     

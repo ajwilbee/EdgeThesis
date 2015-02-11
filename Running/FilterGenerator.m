@@ -59,6 +59,25 @@ mkdir(dirName)
         end
         save([dirName '/_ResultingEdgeImage_GT' num2str(GT)], 'ResultingEdgeImage');
          save([dirName '/_BetterPerformance_GT' num2str(GT)], 'BetterPerformance');%one if yes 0 if no
+         
+            BDM = zeros(length(ResultingEdgeImage),1);
+            Sobel = zeros(length(ResultingEdgeImage),1);
+            Canny = zeros(length(ResultingEdgeImage),1);
+            Filters = zeros(length(ResultingEdgeImage),1);
+            for y = 1: length(ResultingEdgeImage)
+
+               BDM(y) = ResultingEdgeImage(y).BDM;
+
+               Sobel(y) = ResultingEdgeImage(y).SobelBDM;
+
+               Canny(y) = ResultingEdgeImage(y).CannyBDM;
+
+               Filters(y) = ResultingEdgeImage(y).Filter;
+
+            end
+
+            out = [BDM Sobel Canny Filters BetterPerformance']; 
+            csvwrite([dirName '\ResultPlotGT' num2str(GT) '.csv'],out);
 
 
     end
