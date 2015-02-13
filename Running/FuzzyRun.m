@@ -87,7 +87,7 @@ load('C:\Users\ajw4388\Documents\MATLAB\Thesis_Code\CannySobelBDM\CannySobelBDMV
 
         end
         A = cell2mat(AllFilters')';
-        out = [BDM Sobel Canny Filters]; 
+        out = [BDM Sobel Canny Filters BetterPerformance']; 
     csvwrite([dirName,'\ResultPlot.csv'],out);
     csvwrite([dirName,'\ChosenFilters.csv'],A);
     
