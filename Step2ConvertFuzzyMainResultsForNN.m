@@ -9,7 +9,7 @@
 %remove empty filter counts
 clear remove
 GT = 1;
-StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\FuzzySystem\Fuzzy_PSO_AllImages_FilterGeneration_GT1_feb3_Train_100Iter\Run2_TrainAndTest';
+StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\FuzzySystem\Feb5\Fuzzy_PSO_AllImages_FilterGeneration_GT1_feb5_Train\Run4_TrainAndTest';
 mkdir(StorageLocation);
 for x = 1:size(AllFilters,1)
     
