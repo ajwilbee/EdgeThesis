@@ -9,14 +9,14 @@
 %remove empty filter counts
 clear remove
 GT = 1;
-StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\FuzzySystem\Feb5\Fuzzy_PSO_AllImages_FilterGeneration_GT1_feb5_Train\Run4_TrainAndTest';
+StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\FuzzySystem\Feb5\Fuzzy_PSO_AllImages_FilterGeneration_GT1_feb5_Train\Run7_TrainAndTest_NewNNEncoding';
 mkdir(StorageLocation);
 for x = 1:size(AllFilters,1)
     
     if isempty(AllFilters{x})
       remove(x) = (1);
     else
-        remove(x) = (0);
+      remove(x) = (0);
     end
     
 end
@@ -156,10 +156,15 @@ numNNOutputs = length(temp);
 [B I] = sort(FilterUsed,'descend');
 for x = 1:size(AllImages,1)
     AllImages{x,3}(1) = find(I == AllImages{x,3}(1),1);
-    temp = (dec2bin(AllImages{x,3}(1))-'0')';
-    if(length(temp) < numNNOutputs)
-       temp = padarray(temp,numNNOutputs-length(temp),'pre'); 
-    end
+    
+    %true value encoding for NN
+    temp = zeros(length(AllFilters),1);
+    temp(AllImages{x,3}(1)) = 1;
+% Old binary encoding method for NN    
+%     temp = (dec2bin(AllImages{x,3}(1))-'0')';
+%     if(length(temp) < numNNOutputs)
+%        temp = padarray(temp,numNNOutputs-length(temp),'pre'); 
+%     end
     AllImages{x,7} = temp;% the binary representation    
     
 

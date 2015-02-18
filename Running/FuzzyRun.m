@@ -25,6 +25,15 @@ load('C:\Users\ajw4388\Documents\MATLAB\Thesis_Code\CannySobelBDM\CannySobelBDMV
                
                     CannyEdgeImage{count} = CannySobelBDM(x,GT).OutputImage_Canny;
                     CannyBDM(count) = CannySobelBDM(x,GT).BDM_Canny ;
+                    
+                    PrewittEdgeImage{count} = CannySobelBDM(x,GT).OutputImage_Prewitt;
+                    PrewittBDM(count) = CannySobelBDM(x,GT).BDM_Prewitt ;
+                    
+                    RobertsEdgeImage{count} = CannySobelBDM(x,GT).OutputImage_Roberts;
+                    RobertsBDM(count) = CannySobelBDM(x,GT).BDM_Roberts ;
+                    
+                    LogEdgeImage{count} = CannySobelBDM(x,GT).OutputImage_Log;
+                    LogBDM(count) = CannySobelBDM(x,GT).BDM_Log;
                 
                 count = count +1;
             end
@@ -46,22 +55,29 @@ load('C:\Users\ajw4388\Documents\MATLAB\Thesis_Code\CannySobelBDM\CannySobelBDMV
     for x = 1:size(AllImages,2)
         FilterIndex = bin2dec(num2str(output(:,x))');%get number for CA filter to use
         if(FilterIndex > length(AllFilters))
-           FilterIndex = length(AllFilters)
+           FilterIndex = length(AllFilters);
         end
         Filter = AllFilters{FilterIndex};
         [BDM, EdgeImage] = fuzzy_fitness(double(rgb2gray(AllImages{x})),AllTargetsCell{x}, Filter);
 
-        subplot(2,2,1);imshow(AllTargetsCell{x});title(['GroundTruth ' num2str(GT)]);
-        subplot(2,2,2);imshow(EdgeImage);title(['Test BDM = ' num2str(BDM)]);
-        subplot(2,2,3);imshow( SobelEdgeImage{x});title(['Sobel BDM = ' num2str(SobelBDM(x))]);
-        subplot(2,2,4);imshow( CannyEdgeImage{x});title(['Canny BDM = ' num2str(CannyBDM(x))]);
+        subplot(3,3,1);imshow(AllImages{x});title(['Original Image ' names(x)]);
+        subplot(3,3,3);imshow(AllTargetsCell{x});title(['GroundTruth ' num2str(GT)]);
+        subplot(3,3,4);imshow(EdgeImage);title(['Test BDM = ' num2str(BDM)]);
+        subplot(3,3,5);imshow( SobelEdgeImage{x});title(['Sobel BDM = ' num2str(SobelBDM(x))]);
+        subplot(3,3,6);imshow( CannyEdgeImage{x});title(['Canny BDM = ' num2str(CannyBDM(x))]);
+        subplot(3,3,7);imshow( PrewittEdgeImage{x});title(['Prewitt BDM = ' num2str(PrewittBDM(x))]);
+        subplot(3,3,8);imshow( RobertsEdgeImage{x});title(['Roberts BDM = ' num2str(RobertsBDM(x))]);
+        subplot(3,3,9);imshow( LogEdgeImage{x});title(['Log BDM = ' num2str(LogBDM(x))]);
         saveas(figure(1),strcat(dirName, '/', names{x}, 'GroundTruth_', num2str(GT)),'jpg')
         ResultingEdgeImage(x) = struct('BDM',BDM,'EdgeImage', EdgeImage,...
             'GroundTruth',AllTargetsCell{x},'Original',AllImages{x},'ImageName', names{x},...
             'SobelEdgeImage', SobelEdgeImage{x},'SobelBDM',SobelBDM(x),...
             'CannyEdgeImage',CannyEdgeImage{x},'CannyBDM',CannyBDM(x),'Filter',Filter );
         %if BDM is lower than the performance was better
-        if(BDM <CannyBDM(x) && BDM <SobelBDM(x))
+        
+        BenchBDM = [CannySobelBDM(x).BDM_Sobel CannySobelBDM(x).BDM_Canny CannySobelBDM(x).BDM_Prewitt CannySobelBDM(x).BDM_Roberts CannySobelBDM(x).BDM_Log];
+        BenchMin = min(BenchBDM);
+        if(BDM <BenchMin)
             BetterPerformance(x) = 1;
         else
             BetterPerformance(x) = 0;
@@ -71,23 +87,22 @@ load('C:\Users\ajw4388\Documents\MATLAB\Thesis_Code\CannySobelBDM\CannySobelBDMV
     save([dirName '/_ResultingEdgeImage_GT' num2str(GT)], 'ResultingEdgeImage');
     save([dirName '/_BetterPerformance_GT' num2str(GT)], 'BetterPerformance');%one if yes 0 if no
      
-    BDM = zeros(length(ResultingEdgeImage),1);
-    Sobel = zeros(length(ResultingEdgeImage),1);
-    Canny = zeros(length(ResultingEdgeImage),1);
-    Filters = zeros(length(ResultingEdgeImage),3);
-        for y = 1: length(ResultingEdgeImage)
 
-               BDM(y) = ResultingEdgeImage(y).BDM;
+names = zeros(size(CannySobelBDM,1),1);
+for x = 1:size(CannySobelBDM,1)
+    names(x) = str2num(CannySobelBDM(x,1).ImageName(1:end));
+    
+end
+BDM = zeros(length(ResultingEdgeImage),1);
+Filters = zeros(length(ResultingEdgeImage),3);
+for y = 1: length(ResultingEdgeImage)
+      
+           BDM(y) = ResultingEdgeImage(y).BDM;
+           Filters(y,:) = ResultingEdgeImage(y).Filter;
+end
 
-               Sobel(y) = ResultingEdgeImage(y).SobelBDM;
-
-               Canny(y) = ResultingEdgeImage(y).CannyBDM;
-
-               Filters(y,:) = ResultingEdgeImage(y).Filter;
-
-        end
         A = cell2mat(AllFilters')';
-        out = [BDM Sobel Canny Filters BetterPerformance']; 
+        out = [BDM SobelBDM' CannyBDM' PrewittBDM' RobertsBDM' LogBDM' Filters BetterPerformance' names]; 
     csvwrite([dirName,'\ResultPlot.csv'],out);
     csvwrite([dirName,'\ChosenFilters.csv'],A);
     

@@ -44,12 +44,13 @@ for GT = 1:4
          AllImages{i,6} = CannySobelBDM(i,GT).ImageFile;
     end
     for x = 1:size(AllImages,1)
-
-        if(CannySobelBDM(x).BDM_Sobel < CannySobelBDM(x).BDM_Canny)
-           AllImages{x,4} = CannySobelBDM(x).BDM_Sobel ;
-        else
-           AllImages{x,4} = CannySobelBDM(x).BDM_Canny ;
-        end
+        BenchBDM = [CannySobelBDM(x).BDM_Sobel CannySobelBDM(x).BDM_Canny CannySobelBDM(x).BDM_Prewitt CannySobelBDM(x).BDM_Roberts CannySobelBDM(x).BDM_Log];
+        AllImages{x,4} = min(BenchBDM);
+%         if(CannySobelBDM(x).BDM_Sobel < CannySobelBDM(x).BDM_Canny)
+%            AllImages{x,4} = CannySobelBDM(x).BDM_Sobel ;
+%         else
+%            AllImages{x,4} = CannySobelBDM(x).BDM_Canny ;
+%         end
 
     end
     

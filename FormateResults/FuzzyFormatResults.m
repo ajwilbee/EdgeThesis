@@ -40,5 +40,8 @@ Filters = zeros(length(ResultingEdgeImage),3);
     end
     A = cell2mat(AllFilters')';
     out = [BDM Sobel Canny Filters]; 
+    temp = sum(out(:,1:6));
+    temp = padarray(temp,[0,size(out,2)-length(temp)],'post');
+    out(end+1,:) = temp;
 csvwrite('ResultPlot.csv',out);
 csvwrite('ChosenFilters.csv',A);
