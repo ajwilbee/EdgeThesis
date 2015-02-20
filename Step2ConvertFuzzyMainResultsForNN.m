@@ -9,8 +9,8 @@
 %remove empty filter counts
 clear remove
 GT = 1;
-StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\FuzzySystem\Feb5\Fuzzy_PSO_AllImages_FilterGeneration_GT1_feb5_Train\Run7_TrainAndTest_NewNNEncoding';
-mkdir(StorageLocation);
+% StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\FuzzySystem\Feb5\Fuzzy_PSO_AllImages_FilterGeneration_GT1_feb5_Train\Run9_TrainAndTest_NewNNEncoding';
+% mkdir(StorageLocation);
 for x = 1:size(AllFilters,1)
     
     if isempty(AllFilters{x})
@@ -41,7 +41,7 @@ end
 FinalFilters = zeros(length(AllFilters),1);
 AllImageFilters = zeros(length(AllFilters),2); %has a list of final filters paired with images
 KeepGoing = logical(1);
-
+AllImagesCopy = AllImages;
 while(KeepGoing)
     FinalCount = zeros(length(AllFilters),1);
     %count how many times each filter solves an image
@@ -85,6 +85,33 @@ while(KeepGoing)
     end
 end
 FinalFilters = logical(FinalFilters);
+
+[vals index] = find(FinalFilters == 1);
+% go through all the filters attached to an image and remove the ones that
+% are not on the final filter list
+for x = 1:size(AllImagesCopy,1)
+     for y = 1: size(AllImagesCopy{x,3},1)
+         remove = 1;
+         for z = 1:length(index)
+            if(AllImagesCopy{x,3}(y,1) == index(z))
+                remove = 0;
+            end
+         end
+         if(remove)
+            AllImagesCopy{x,3}(y,1) = [];
+         end
+     end
+end
+
+%ensure that the lowest value BDM of the available filters is chosen
+for x = 1:size(AllImagesCopy,1)
+     for y = 1: size(AllImagesCopy{x,3},1)
+        if( AllImagesCopy{x,3}(y,2) < AllImageFilters(x,2))
+            AllImageFilters(x,:) = AllImagesCopy{x,3}(y,:);
+        end
+     end     
+end
+
 [B I] = sort(FinalFilters,'descend');
 for x = 1:size(AllImageFilters,1)
     AllImageFilters(x,1) = find(I == AllImageFilters(x,1),1);
@@ -95,11 +122,6 @@ temp = temp-'0';
 numNNOutputs = length(temp);
 
 for x = 1:size(AllImages,1)
-    temp = (dec2bin(AllImageFilters(x,1))-'0')';
-    if(length(temp) < numNNOutputs)
-       temp = padarray(temp,numNNOutputs-length(temp),'pre'); 
-    end
-    AllImages{x,7} = temp;% the binary representation    
     AllImages{x,3} = AllImageFilters(x,:);
 end
 
@@ -153,6 +175,8 @@ temp = temp-'0';
 numNNOutputs = length(temp);
 
 
+
+
 [B I] = sort(FilterUsed,'descend');
 for x = 1:size(AllImages,1)
     AllImages{x,3}(1) = find(I == AllImages{x,3}(1),1);
@@ -171,14 +195,13 @@ for x = 1:size(AllImages,1)
 end
 
 
-
 Sizes = [25 50 100];
 save([StorageLocation,'\ChosenFilters'], 'AllFilters')
       
 for sizeiter = 1:length(Sizes)
     dirName = [StorageLocation '\FinalResults_NNSize_' num2str(Sizes(sizeiter)),'_GroundTruth_' num2str(GT)];
     mkdir(dirName)
-    ResultNN = Main_Fuzzy_Classification(AllImages,sizeiter,dirName);
+    ResultNN = Main_Fuzzy_Classification(AllImages,Sizes(sizeiter),dirName);
     save([dirName,'\NeuralNetwork'], 'ResultNN');    
     [ResultingEdgeImage,BetterPerformance] = FuzzyRun(ResultNN,AllFilters,dirName);    
 end

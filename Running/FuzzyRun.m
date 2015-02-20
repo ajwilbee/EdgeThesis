@@ -50,10 +50,12 @@ load('C:\Users\ajw4388\Documents\MATLAB\Thesis_Code\CannySobelBDM\CannySobelBDMV
     net.layers{2}.transferFcn = 'tansig';
     ReducedFeatures =((AllFeatures'-meanMat)*W)';
 
-    output = net(ReducedFeatures)>0;
+    output = net(ReducedFeatures);
+    [~,tester] = max(output);
+    output = tester;
     figure(1);title('BDM Comparison');
     for x = 1:size(AllImages,2)
-        FilterIndex = bin2dec(num2str(output(:,x))');%get number for CA filter to use
+        FilterIndex =output(x)';%get number for CA filter to use
         if(FilterIndex > length(AllFilters))
            FilterIndex = length(AllFilters);
         end

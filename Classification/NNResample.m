@@ -10,7 +10,7 @@ function [AllInputs,AllOutputs] = NNResample( ReducedFeatures, AllTargets, Layer
     NumOutput = size(AllTargets,1);
     NumInput = size(ReducedFeatures,1);
 
-    SamplesNeeded = NumHidden*NumInput+NumHidden*NumOutput+NumHidden+NumOutput;
+    SamplesNeeded = (NumHidden*NumInput+NumHidden*NumOutput+NumHidden+NumOutput)*10;
     AllInputs = zeros(NumInput,SamplesNeeded);
     AllOutputs = zeros(NumOutput,SamplesNeeded);
 
