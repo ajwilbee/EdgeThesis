@@ -12,9 +12,10 @@
 %load('C:\Users\ajw4388\Documents\MATLAB\TestOutputFile.mat');
 %FilterGeneratorValues = outputValues;
 
-StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\NonFuzzySystem\Non_Fuzzy_PSO_TrainedCAFilters_Jan22_Train\Run3';
+StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\NonFuzzySystem\SparseBusy\Busy';
 mkdir(StorageLocation);
-for GT = 1:size(FilterGeneratorValues,2)
+FilterGeneratorValues = FilterGeneratorValues';
+for GT = 1:1%size(FilterGeneratorValues,2)
     clear AllImages AllTargetsCell
     count = 1;
     for x = 1:size(FilterGeneratorValues,1)

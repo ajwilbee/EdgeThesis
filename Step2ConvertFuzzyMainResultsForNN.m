@@ -9,35 +9,42 @@
 %remove empty filter counts
 clear remove
 GT = 1;
-% StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\FuzzySystem\Feb5\Fuzzy_PSO_AllImages_FilterGeneration_GT1_feb5_Train\Run9_TrainAndTest_NewNNEncoding';
-% mkdir(StorageLocation);
+StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\FuzzySystem\SparseBusy\Fuzzy_PSO_AllImages_FilterGenerationGTBusy\Run1';
+mkdir(StorageLocation);
+
+
+% for x = 1:size(AllFilters,1)
+%     
+%     if isempty(AllFilters{x})
+%       remove(x) = (1);
+%     else
+%       remove(x) = (0);
+%     end
+%     
+% end
+% remove = logical(remove);
+% if(~isempty(remove))
+%     AllFilters(remove,:) = [];
+% end
+% clear remove
+% for x = 1:size(AllImages,1)
+%     
+%     if isempty(AllImages{x,3})
+%       remove(x) = (1);
+%     else
+%         remove(x) = (0);
+%     end
+%     
+% end
+% remove = logical(remove);
+% if(~isempty(remove))
+%     AllImages(remove,:) = [];
+% end
+
 for x = 1:size(AllFilters,1)
-    
-    if isempty(AllFilters{x})
-      remove(x) = (1);
-    else
-      remove(x) = (0);
-    end
-    
+   AllFilters{x}(4) = x; 
 end
-remove = logical(remove);
-if(~isempty(remove))
-    AllFilters(remove,:) = [];
-end
-clear remove
-for x = 1:size(AllImages,1)
-    
-    if isempty(AllImages{x,3})
-      remove(x) = (1);
-    else
-        remove(x) = (0);
-    end
-    
-end
-remove = logical(remove);
-if(~isempty(remove))
-    AllImages(remove,:) = [];
-end
+
 FinalFilters = zeros(length(AllFilters),1);
 AllImageFilters = zeros(length(AllFilters),2); %has a list of final filters paired with images
 KeepGoing = logical(1);
@@ -51,7 +58,7 @@ while(KeepGoing)
         end
     end
     c = 1;
-
+    if(max(FinalCount) >1)
     %zero out the index of the most effective filter
     remove = find(FinalCount == max(FinalCount),1);
     FinalCount(remove) = 0;
@@ -83,34 +90,30 @@ while(KeepGoing)
              KeepGoing = 1;
          end
     end
+    else
+        KeepGoing = 0;
+    end
 end
 FinalFilters = logical(FinalFilters);
 
-[vals index] = find(FinalFilters == 1);
-% go through all the filters attached to an image and remove the ones that
-% are not on the final filter list
-for x = 1:size(AllImagesCopy,1)
-     for y = 1: size(AllImagesCopy{x,3},1)
-         remove = 1;
-         for z = 1:length(index)
-            if(AllImagesCopy{x,3}(y,1) == index(z))
-                remove = 0;
-            end
-         end
-         if(remove)
-            AllImagesCopy{x,3}(y,1) = [];
-         end
-     end
+for x = 1:size(AllImageFilters,1)
+    if(AllImageFilters(x,1) == 0)
+        for z = 1:size(FinalFilters,1)
+            %fill in the blanks
+           if(FinalFilters(z))               
+                tempImgGrey =AllImages{x,1};       
+                tempImgGT = AllImages{x,2};
+                BDM = fuzzy_fitness(tempImgGrey,tempImgGT, AllFilters{z}(1:3)); 
+                %if filter is within 20% of the bdm needed
+                if(BDM < AllImageFilters(x,2) || AllImageFilters(x,2) == 0)
+                    AllImageFilters(x,:) = [z,BDM];
+                end
+           end
+           
+        end
+    end
 end
 
-%ensure that the lowest value BDM of the available filters is chosen
-for x = 1:size(AllImagesCopy,1)
-     for y = 1: size(AllImagesCopy{x,3},1)
-        if( AllImagesCopy{x,3}(y,2) < AllImageFilters(x,2))
-            AllImageFilters(x,:) = AllImagesCopy{x,3}(y,:);
-        end
-     end     
-end
 
 [B I] = sort(FinalFilters,'descend');
 for x = 1:size(AllImageFilters,1)
@@ -120,13 +123,21 @@ temp = max(AllImageFilters(:,1));
 temp = dec2bin(temp);
 temp = temp-'0';
 numNNOutputs = length(temp);
+for x = 1:size(AllFilters,1)
+    AllFilters{x}(4) = x;
+end
+
+
+AllFilters(~FinalFilters) = [];
+
+
 
 for x = 1:size(AllImages,1)
     AllImages{x,3} = AllImageFilters(x,:);
 end
 
 
-AllFilters(~FinalFilters) = [];
+
 
 %map the duplicates to the lowest filter number occurance and then
 %eliminater all others while maintaining the indexing
@@ -135,7 +146,7 @@ Mapping = 0;
 for x = 1:length(AllFilters)
     count2 = 1;
     for y = x+1:length(AllFilters)
-        if(AllFilters{x} == AllFilters{y})
+        if(AllFilters{x}(1:4) == AllFilters{y}(1:4))
             Mapping(x,count2) = y;
             count2 = count2+1;
         end
@@ -181,6 +192,41 @@ numNNOutputs = length(temp);
 for x = 1:size(AllImages,1)
     AllImages{x,3}(1) = find(I == AllImages{x,3}(1),1);
     
+end
+
+%to implement choosing the best of the available filters the entire process
+%will need to be rewritten. AllFilters Now has the original filter
+%numbering as part of its information.
+
+% % go through all the filters attached to an image and remove the ones that
+% % are not on the final filter list indexing is based on original indexing
+% for x = 1:size(AllImagesCopy,1)
+%     remove = ones(size(AllImagesCopy{x,3},1),1);
+%      for y = 1: size(AllImagesCopy{x,3},1)   
+%          for z = 1:length(AllFilters)
+%             if(AllImagesCopy{x,3}(y,1) == AllFilters{z}(4))
+%                 remove(y) = 0;
+%             end
+%          end
+%          
+%            
+%      end
+%       remove = logical(remove);
+%       AllImagesCopy{x,3}(remove,:) = [];
+% end
+% 
+% %ensure that the lowest value BDM of the available filters is chosen
+% for x = 1:size(AllImagesCopy,1)
+%      for y = 1: size(AllImagesCopy{x,3},1)
+%         if( AllImagesCopy{x,3}(y,2) < AllImage{x,3}(2))
+%             AllImage{x,3} = AllImagesCopy{x,3}(y,:);
+%         end
+%      end     
+% end
+
+
+
+for x = 1:size(AllImages,1)    
     %true value encoding for NN
     temp = zeros(length(AllFilters),1);
     temp(AllImages{x,3}(1)) = 1;
@@ -193,6 +239,9 @@ for x = 1:size(AllImages,1)
     
 
 end
+
+
+
 
 
 Sizes = [25 50 100];

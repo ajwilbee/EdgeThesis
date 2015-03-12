@@ -10,7 +10,36 @@ function [AllInputs,AllOutputs] = NNResample( ReducedFeatures, AllTargets, Layer
     NumOutput = size(AllTargets,1);
     NumInput = size(ReducedFeatures,1);
 
-    SamplesNeeded = (NumHidden*NumInput+NumHidden*NumOutput+NumHidden+NumOutput)*10;
+    allSum = sum(AllTargets');
+    [m i] = max(allSum);
+    allAdds = floor((m*(ones(1,length(allSum))))./allSum);
+    allAdds(allAdds == Inf) = 0
+    numElements = sum(allSum.*allAdds);
+
+    NewAllTargets = zeros(size(AllTargets,1),numElements);
+    NewReducedFeatures = zeros(size(ReducedFeatures,1),numElements);
+
+    %build a new dataset to force there to be the same number of samples
+    %for each filter.
+    count = 1;
+
+    for x = 1:size(AllTargets,2)
+        numAdd = max(AllTargets(:,x).*allAdds');
+
+        for y = 1:numAdd
+            NewAllTargets(:,count) = AllTargets(:,x);
+            NewReducedFeatures(:,count) =  ReducedFeatures(:,x);
+            count = count +1;
+        end
+
+    end
+
+    AllTargets = NewAllTargets;
+    ReducedFeatures = NewReducedFeatures;
+    allSum = sum(AllTargets');
+
+    
+    SamplesNeeded = (NumHidden*NumInput+NumHidden*NumOutput+NumHidden+NumOutput);
     AllInputs = zeros(NumInput,SamplesNeeded);
     AllOutputs = zeros(NumOutput,SamplesNeeded);
 

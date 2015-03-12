@@ -13,9 +13,10 @@ clc
 % ImageFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\images\test';
 % GroundTruthFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\groundTruth\test';
 % load('MatFileResults\cannySobelBDM_DefaultSettings_AllGT.mat');
-ImageSaveFolderName = 'Fuzzy_PSO_AllImages_FilterGenerationGT'; % make this ahead of time
+ImageSaveFolderName = 'Fuzzy_PSO_AllImages_FilterGenerationGTBusy'; % make this ahead of time
 ImageSaveFolder = [pwd '\' ImageSaveFolderName];
 mkdir(ImageSaveFolder);
+load('CannySobelBDM\CannySobelBDMTrainingNNBusy.mat')
 % load('CannySobelBDM.mat')%all image files and ground truths come from here to maintain consistancy
 % addpath(ImageFilesPath,GroundTruthFilesPath);
 % ImageFiles = dir(fullfile(ImageFilesPath, '*.jpg'));
@@ -24,11 +25,6 @@ mkdir(ImageSaveFolder);
 %
 iteration =100;
 
-%For each GT find a set of filters that will work
-for GT = 1:4
-    ImageSaveFolderName = ['Fuzzy_PSO_AllImages_FilterGenerationGT' num2str(GT)]; % make this ahead of time
-    ImageSaveFolder = [pwd '\' ImageSaveFolderName];
-    mkdir(ImageSaveFolder);
     %this array of cells will contain: 1) the image,
     %                                  2) its ground truth,
     %                                  3) the index of the filter in the filter array, and its corrisponding BDM,
@@ -38,10 +34,10 @@ for GT = 1:4
 
     for i=1:size(CannySobelBDM,1)
     %      imFullName =ImageFiles(i).name(1:end-4);
-         AllImages{i,1} = double(rgb2gray(CannySobelBDM(i,GT).ImageFile));
-         AllImages{i,2} = double(CannySobelBDM(i,GT).GroundTruthFile);
-         AllImages{i,5} = CannySobelBDM(i,GT).ImageName;
-         AllImages{i,6} = CannySobelBDM(i,GT).ImageFile;
+         AllImages{i,1} = double(rgb2gray(CannySobelBDM(i).ImageFile));
+         AllImages{i,2} = double(CannySobelBDM(i).GroundTruthFile);
+         AllImages{i,5} = CannySobelBDM(i).ImageName;
+         AllImages{i,6} = CannySobelBDM(i).ImageFile;
     end
     for x = 1:size(AllImages,1)
         BenchBDM = [CannySobelBDM(x).BDM_Sobel CannySobelBDM(x).BDM_Canny CannySobelBDM(x).BDM_Prewitt CannySobelBDM(x).BDM_Roberts CannySobelBDM(x).BDM_Log];
@@ -111,10 +107,10 @@ for GT = 1:4
                 count = count +1;
            
         end
-    save(strcat([ImageSaveFolder '\' ['AllFilters' ] ]),'AllFilters'); %filters that solve images
-    save(strcat([ImageSaveFolder '\' ['AllImages' ] ]),'AllImages'); % which filter sovles which image
-    end
-end
+     save(strcat([ImageSaveFolder '\' ['AllFilters' ] ]),'AllFilters'); %filters that solve images
+     save(strcat([ImageSaveFolder '\' ['AllImages' ] ]),'AllImages'); % which filter sovles which image
+   end
+
  
  save(strcat([ImageSaveFolder '\' ['AllFilters' ] ]),'AllFilters'); %filters that solve images
  save(strcat([ImageSaveFolder '\' ['AllImages' ] ]),'AllImages'); % which filter sovles which image

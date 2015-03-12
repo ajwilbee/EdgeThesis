@@ -6,25 +6,24 @@ close all
 %clear all
 clc
 %%
-ImageFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\images\Train';
-GroundTruthFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\groundTruth\Train';
-ImageSaveFolderName = 'Non_Fuzzy_PSO_TrainedCAFilters'; % make this ahead of time
+% ImageFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\images\Train';
+% GroundTruthFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\groundTruth\Train';
+load('CannySobelBDM\CannySobelBDMTrainingNNBusy.mat')
+ImageSaveFolderName = 'Non_Fuzzy_PSO_TrainedCAFiltersBusy'; % make this ahead of time
 ImageSaveFolder = [pwd '\' ImageSaveFolderName];
-load('MatFileResults\cannySobelBDM_DefaultSettings_AllGT.mat');
 mkdir(ImageSaveFolder);
 
-addpath(ImageFilesPath,GroundTruthFilesPath);
-ImageFiles = dir(fullfile(ImageFilesPath, '*.jpg'));
-GroundTruthFiles = dir(fullfile(GroundTruthFilesPath, '*.mat'));
+
+
 
 %%
 iteration =100;
-for i=1:length(ImageFiles)
+parfor i=1:length(CannySobelBDM)
 %starting point for PSO: 1-> division offset 2-> fuzzy boundery 3-> CA rule
     parameters = [23;124;321;452;35;326;168;245;410;203;
                   123;24;121;45;355;56;18;45;386;178;];%last parameter must be the CA neighborhood rule
-    imFullName =ImageFiles(1).name(1:end-4);
-    im1 = imread(ImageFiles(1).name);
+    imFullName =CannySobelBDM(1).ImageName;
+    im1 = CannySobelBDM(1).ImageFile;
     size(parameters);
     c1 =2.01;% velocity modifier
     c2 = 2.01;% velocity modifier
@@ -38,17 +37,17 @@ for i=1:length(ImageFiles)
 
  
      disp(i);
-    imFullName =ImageFiles(i).name(1:end-4);
-    disp(imFullName);
-    im = imread(ImageFiles(i).name);
+    imFullName =CannySobelBDM(i).ImageName;
+    %disp(imFullName);
+    im =  CannySobelBDM(i).ImageFile;
     imgGrey =double(im2bw(rgb2gray(im),0.4));
-    load(GroundTruthFiles(i).name);
+   
     
-    for whichGT = 1:4
-        imgGT = double(groundTruth{whichGT}.Boundaries);
+    
+        imgGT = CannySobelBDM(i).GroundTruthFile;
         %mkdir(ImageSaveFolderName,['GroundTruth', num2str(whichGT)]);
-        mkdir([ImageSaveFolderName '\GroundTruth', num2str(whichGT)],imFullName);
-        SaveFileLocation = strcat([ImageSaveFolderName '\GroundTruth', num2str(whichGT),'\',imFullName,'\']);
+        mkdir([ImageSaveFolderName '\GroundTruth'],imFullName);
+        SaveFileLocation = strcat([ImageSaveFolderName,'\',imFullName,'\']);
         
         [bestParameters, best_BDM, localPositions,localFitness ] = myPSO(imgGrey, imgGT, coef, iteration, parameters);
         AllLocalCA_WeightPairs(1,:,i) = localPositions(1,:);
@@ -61,10 +60,10 @@ for i=1:length(ImageFiles)
         title(['First Image'])
         subplot(2,3,2);imshow(imgGT);
         title(['Ground Truth'])
-        subplot(2,3,3);imshow(CannySobelBDM(i,whichGT).OutputImage_Sobel);
-        title(['Sobel Detection : ', num2str(CannySobelBDM(i,whichGT).BDM_Sobel)])
-        subplot(2,3,4);imshow(CannySobelBDM(i,whichGT).OutputImage_Canny);
-        title(['Canny Detection : ', num2str(CannySobelBDM(i,whichGT).BDM_Canny)])
+        subplot(2,3,3);imshow(CannySobelBDM(i).OutputImage_Sobel);
+        title(['Sobel Detection : ', num2str(CannySobelBDM(i).BDM_Sobel)])
+        subplot(2,3,4);imshow(CannySobelBDM(i).OutputImage_Canny);
+        title(['Canny Detection : ', num2str(CannySobelBDM(i).BDM_Canny)])
         subplot(2,3,5);imshow(bestCAEdgeImage);
         title(['Proposed Method: ', num2str(bestPosition)])
         subplot(2,3,6);imshow(getMaskCA(bestParameters(1)));
@@ -73,10 +72,10 @@ for i=1:length(ImageFiles)
         
         temp = getMaskCA(bestParameters);
         CorrectFilterOutputsforTraining = reshape(temp',[1,9]);        
-        FilterGeneratorValues(i,whichGT) = struct('ImageFile', im,'GroundTruthFile',imgGT,'GroundTruthNumber',whichGT,'FilterMask',temp,'TrueNNOutput',CorrectFilterOutputsforTraining,'BDM',num2str(bestPosition),'OutPutImage',bestCAEdgeImage);
+        FilterGeneratorValues(i) = struct('ImageFile', im,'GroundTruthFile',imgGT,'FilterMask',temp,'TrueNNOutput',CorrectFilterOutputsforTraining,'BDM',num2str(bestPosition),'OutPutImage',bestCAEdgeImage);
 
         close all;
-    end
+    %save(strcat([ImageSaveFolderName '\' ['FilterGeneratorValues' ] ]),'FilterGeneratorValues');
  end
  save(strcat([ImageSaveFolderName '\' ['FilterGeneratorValues' ] ]),'FilterGeneratorValues');
     

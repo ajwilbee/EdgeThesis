@@ -10,7 +10,7 @@ GT = 1;
 
 
 
-load('C:\Users\ajw4388\Documents\MATLAB\Thesis_Code\CannySobelBDM\CannySobelBDMValidation.mat')  
+load('C:\Users\ajw4388\Documents\MATLAB\Thesis_Code\CannySobelBDM\CannySobelBDMTestingNNBusy.mat')  
     clear AllImages AllTargetsCell
     count = 1;
     clear AllImages AllTargetsCell names SobelEdgeImage SobelBDM CannyEdgeImage CannyBDM
@@ -69,12 +69,16 @@ load('C:\Users\ajw4388\Documents\MATLAB\Thesis_Code\CannySobelBDM\CannySobelBDMV
         subplot(3,3,6);imshow( CannyEdgeImage{x});title(['Canny BDM = ' num2str(CannyBDM(x))]);
         subplot(3,3,7);imshow( PrewittEdgeImage{x});title(['Prewitt BDM = ' num2str(PrewittBDM(x))]);
         subplot(3,3,8);imshow( RobertsEdgeImage{x});title(['Roberts BDM = ' num2str(RobertsBDM(x))]);
-        subplot(3,3,9);imshow( LogEdgeImage{x});title(['Log BDM = ' num2str(LogBDM(x))]);
+        subplot(3,3,9);imshow( LogEdgeImage{x});title(['LoG BDM = ' num2str(LogBDM(x))]);
         saveas(figure(1),strcat(dirName, '/', names{x}, 'GroundTruth_', num2str(GT)),'jpg')
         ResultingEdgeImage(x) = struct('BDM',BDM,'EdgeImage', EdgeImage,...
             'GroundTruth',AllTargetsCell{x},'Original',AllImages{x},'ImageName', names{x},...
             'SobelEdgeImage', SobelEdgeImage{x},'SobelBDM',SobelBDM(x),...
-            'CannyEdgeImage',CannyEdgeImage{x},'CannyBDM',CannyBDM(x),'Filter',Filter );
+            'CannyEdgeImage',CannyEdgeImage{x},'CannyBDM',CannyBDM(x),...
+            'PrewittEdgeImage',PrewittEdgeImage{x},'PrewittBDM',PrewittBDM(x),...
+            'RobertsEdgeImage',RobertsEdgeImage{x},'RobertsBDM',RobertsBDM(x),...
+            'LoGEdgeImage',LogEdgeImage{x},'LogBDM',LogBDM(x),...
+            'Filter',Filter );
         %if BDM is lower than the performance was better
         
         BenchBDM = [CannySobelBDM(x).BDM_Sobel CannySobelBDM(x).BDM_Canny CannySobelBDM(x).BDM_Prewitt CannySobelBDM(x).BDM_Roberts CannySobelBDM(x).BDM_Log];
@@ -100,7 +104,7 @@ Filters = zeros(length(ResultingEdgeImage),3);
 for y = 1: length(ResultingEdgeImage)
       
            BDM(y) = ResultingEdgeImage(y).BDM;
-           Filters(y,:) = ResultingEdgeImage(y).Filter;
+           Filters(y,:) = ResultingEdgeImage(y).Filter(1:3);
 end
 
         A = cell2mat(AllFilters')';

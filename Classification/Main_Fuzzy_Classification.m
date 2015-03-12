@@ -42,7 +42,7 @@ function [ResultNN] = Main_Fuzzy_Classification(AllImages,Size,dirName)
         robustTestReducedFeatures= ReducedFeatures(:,10:60);
         AllTargets = [AllTargets(:,1:10),AllTargets(:,60:end)];
         ReducedFeatures = [ReducedFeatures(:,1:10),ReducedFeatures(:,60:end)];
-        [ReducedFeatures, AllTargets]=NNResample( ReducedFeatures, AllTargets, LayerSize );
+%         [ReducedFeatures, AllTargets]=NNResample( ReducedFeatures, AllTargets, LayerSize );
         %  net = feedforwardnet(LayerSize);
         %  net = train(net,ReducedFeatures,AllTargets);
 
