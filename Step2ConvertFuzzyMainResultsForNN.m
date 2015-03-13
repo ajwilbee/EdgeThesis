@@ -9,7 +9,7 @@
 %remove empty filter counts
 clear remove
 GT = 1;
-StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\FuzzySystem\SparseBusy\Fuzzy_PSO_AllImages_FilterGenerationGTBusy\Run1';
+StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\FuzzySystem\SparseBusy\Fuzzy_PSO_AllImages_FilterGenerationGTBusy\Run2';
 mkdir(StorageLocation);
 
 
@@ -194,38 +194,6 @@ for x = 1:size(AllImages,1)
     
 end
 
-%to implement choosing the best of the available filters the entire process
-%will need to be rewritten. AllFilters Now has the original filter
-%numbering as part of its information.
-
-% % go through all the filters attached to an image and remove the ones that
-% % are not on the final filter list indexing is based on original indexing
-% for x = 1:size(AllImagesCopy,1)
-%     remove = ones(size(AllImagesCopy{x,3},1),1);
-%      for y = 1: size(AllImagesCopy{x,3},1)   
-%          for z = 1:length(AllFilters)
-%             if(AllImagesCopy{x,3}(y,1) == AllFilters{z}(4))
-%                 remove(y) = 0;
-%             end
-%          end
-%          
-%            
-%      end
-%       remove = logical(remove);
-%       AllImagesCopy{x,3}(remove,:) = [];
-% end
-% 
-% %ensure that the lowest value BDM of the available filters is chosen
-% for x = 1:size(AllImagesCopy,1)
-%      for y = 1: size(AllImagesCopy{x,3},1)
-%         if( AllImagesCopy{x,3}(y,2) < AllImage{x,3}(2))
-%             AllImage{x,3} = AllImagesCopy{x,3}(y,:);
-%         end
-%      end     
-% end
-
-
-
 for x = 1:size(AllImages,1)    
     %true value encoding for NN
     temp = zeros(length(AllFilters),1);
@@ -244,13 +212,23 @@ end
 
 
 
-Sizes = [25 50 100];
+%Perform Feature extraction
 save([StorageLocation,'\ChosenFilters'], 'AllFilters')
-      
+for x = 1:size(AllImages,1)
+
+        InputImages{x} = AllImages{x,6};
+        AllTargetsCell{x} =AllImages{x,7} ;
+
+
+
+end
+Features = FeatureExtractionFunc(InputImages);    
+
+Sizes = [25 50 100];
 for sizeiter = 1:length(Sizes)
     dirName = [StorageLocation '\FinalResults_NNSize_' num2str(Sizes(sizeiter)),'_GroundTruth_' num2str(GT)];
     mkdir(dirName)
-    ResultNN = Main_Fuzzy_Classification(AllImages,Sizes(sizeiter),dirName);
+    ResultNN = Main_Fuzzy_Classification(AllImages,Sizes(sizeiter),dirName,Features);
     save([dirName,'\NeuralNetwork'], 'ResultNN');    
     [ResultingEdgeImage,BetterPerformance] = FuzzyRun(ResultNN,AllFilters,dirName);    
 end

@@ -1,4 +1,4 @@
-function [ResultNN] = Main_Fuzzy_Classification(AllImages,Size,dirName)
+function [ResultNN] = Main_Fuzzy_Classification(AllImages,Size,dirName,Features)
 %This is the Main Function for the fuzzy input data
 %The filter generator will create a file which contains an array of
 %structures, these stuctures will have the following fields
@@ -26,7 +26,7 @@ function [ResultNN] = Main_Fuzzy_Classification(AllImages,Size,dirName)
     end
     
 
-        temp = FeatureExtractionFunc(InputImages);
+        temp = Features;
         AllFeatures = temp{1};        
 
         [Z, W, E, mVal,mVar]=myPCA(AllFeatures',.99);
@@ -35,39 +35,18 @@ function [ResultNN] = Main_Fuzzy_Classification(AllImages,Size,dirName)
 
         % create the target values from input data
         AllTargets = cell2mat(AllTargetsCell');
-
-       
         LayerSize = Size;
-        robustTestTargets = AllTargets(:,10:60);
-        robustTestReducedFeatures= ReducedFeatures(:,10:60);
-        AllTargets = [AllTargets(:,1:10),AllTargets(:,60:end)];
-        ReducedFeatures = [ReducedFeatures(:,1:10),ReducedFeatures(:,60:end)];
-%         [ReducedFeatures, AllTargets]=NNResample( ReducedFeatures, AllTargets, LayerSize );
-        %  net = feedforwardnet(LayerSize);
-        %  net = train(net,ReducedFeatures,AllTargets);
+        [ReducedFeatures, AllTargets]=NNResample( ReducedFeatures, AllTargets, LayerSize );
 
-
-         net = patternnet(LayerSize,'trainscg','crossentropy');
-
-
+        net = patternnet(LayerSize,'trainscg','crossentropy');
         net = train(net,ReducedFeatures,AllTargets);
+         
+        figure(1)
+        output = net(ReducedFeatures);
+        plotconfusion(AllTargets, output);
 
-         output = net(robustTestReducedFeatures);
-         figure(1)
-%          performance = perform(net, output,AllTargets);
-         plotconfusion(robustTestTargets, output);
-         figure(2);
-         output = net(ReducedFeatures);
-         plotconfusion(AllTargets, output);
-%          net = train(net,ReducedFeatures,AllTargets);
-% 
-%          output = net(ReducedFeatures);
-%          figure(1)
-%          performance = perform(net, output,AllTargets);
-%          plotconfusion(AllTargets, output);
-         saveas(figure(1),strcat(dirName, '/RobustNNConfusionPlot', num2str(LayerSize)),'jpg')
-          saveas(figure(2),strcat(dirName, '/AllNNConfusionPlot', num2str(LayerSize)),'jpg')
-         ResultNN =  struct('InputFeatures',ReducedFeatures,'OutputValues',AllTargets,'NeuralNetwork',net,'Mean',mVal,'Variance',mVar,'PCATransformationMatrix',W,'LayerSize',LayerSize);
+        saveas(figure(1),strcat(dirName, '/RobustNNConfusionPlot', num2str(LayerSize)),'jpg')
+        ResultNN =  struct('InputFeatures',ReducedFeatures,'OutputValues',AllTargets,'NeuralNetwork',net,'Mean',mVal,'Variance',mVar,'PCATransformationMatrix',W,'LayerSize',LayerSize);
          
         
 end

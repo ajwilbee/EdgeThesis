@@ -60,7 +60,7 @@ load('C:\Users\ajw4388\Documents\MATLAB\Thesis_Code\CannySobelBDM\CannySobelBDMT
            FilterIndex = length(AllFilters);
         end
         Filter = AllFilters{FilterIndex};
-        [BDM, EdgeImage] = fuzzy_fitness(double(rgb2gray(AllImages{x})),AllTargetsCell{x}, Filter);
+        [BDM, EdgeImage] = fuzzy_fitness(double(rgb2gray(AllImages{x})),AllTargetsCell{x}, Filter(1:3));
 
         subplot(3,3,1);imshow(AllImages{x});title(['Original Image ' names(x)]);
         subplot(3,3,3);imshow(AllTargetsCell{x});title(['GroundTruth ' num2str(GT)]);
