@@ -9,7 +9,7 @@
 %remove empty filter counts
 clear remove
 GT = 1;
-StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\FuzzySystem\SparseBusy\Fuzzy_PSO_AllImages_FilterGenerationGTBusy\Run2';
+StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\FuzzySystem\SparseBusy\Fuzzy_PSO_AllImages_FilterGenerationGTBusy\Run6TestAgainstSparseGT';
 mkdir(StorageLocation);
 
 
@@ -58,7 +58,7 @@ while(KeepGoing)
         end
     end
     c = 1;
-    if(max(FinalCount) >1)
+    %if(max(FinalCount) >1)
     %zero out the index of the most effective filter
     remove = find(FinalCount == max(FinalCount),1);
     FinalCount(remove) = 0;
@@ -90,9 +90,9 @@ while(KeepGoing)
              KeepGoing = 1;
          end
     end
-    else
-        KeepGoing = 0;
-    end
+%     else
+%         KeepGoing = 0;
+%     end
 end
 FinalFilters = logical(FinalFilters);
 
@@ -146,7 +146,7 @@ Mapping = 0;
 for x = 1:length(AllFilters)
     count2 = 1;
     for y = x+1:length(AllFilters)
-        if(AllFilters{x}(1:4) == AllFilters{y}(1:4))
+        if(AllFilters{x}(1:3) == AllFilters{y}(1:3))
             Mapping(x,count2) = y;
             count2 = count2+1;
         end

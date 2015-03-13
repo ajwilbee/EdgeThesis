@@ -12,7 +12,7 @@
 %load('C:\Users\ajw4388\Documents\MATLAB\TestOutputFile.mat');
 %FilterGeneratorValues = outputValues;
 
-StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\NonFuzzySystem\SparseBusy\Busy';
+StorageLocation = 'C:\Users\ajw4388\Documents\Thesis\Results\NonFuzzySystem\SparseBusy\Sparse';
 mkdir(StorageLocation);
 FilterGeneratorValues = FilterGeneratorValues';
 for GT = 1:1%size(FilterGeneratorValues,2)
@@ -26,7 +26,7 @@ for GT = 1:1%size(FilterGeneratorValues,2)
         end
 
     end
-    if(count > (size(FilterGeneratorValues,1)/2))
+    
 
         temp = FeatureExtractionFunc(AllImages);
         AllFeatures = temp{1};        
@@ -62,5 +62,5 @@ for GT = 1:1%size(FilterGeneratorValues,2)
              save([dirName,'\NeuralNetwork'], 'ResultNN');
 
         end
-    end
+   
 end

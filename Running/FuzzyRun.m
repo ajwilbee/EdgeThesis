@@ -10,7 +10,7 @@ GT = 1;
 
 
 
-load('C:\Users\ajw4388\Documents\MATLAB\Thesis_Code\CannySobelBDM\CannySobelBDMTestingNNBusy.mat')  
+load('C:\Users\ajw4388\Documents\MATLAB\Thesis_Code\CannySobelBDM\CannySobelBDMTestingNNSparse.mat')  
     clear AllImages AllTargetsCell
     count = 1;
     clear AllImages AllTargetsCell names SobelEdgeImage SobelBDM CannyEdgeImage CannyBDM

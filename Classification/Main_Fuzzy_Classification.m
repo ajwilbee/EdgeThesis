@@ -41,11 +41,11 @@ function [ResultNN] = Main_Fuzzy_Classification(AllImages,Size,dirName,Features)
         net = patternnet(LayerSize,'trainscg','crossentropy');
         net = train(net,ReducedFeatures,AllTargets);
          
-        figure(1)
-        output = net(ReducedFeatures);
-        plotconfusion(AllTargets, output);
+%         figure(1)
+%         output = net(ReducedFeatures);
+%         plotconfusion(AllTargets, output);
 
-        saveas(figure(1),strcat(dirName, '/RobustNNConfusionPlot', num2str(LayerSize)),'jpg')
+%         saveas(figure(1),strcat(dirName, '/RobustNNConfusionPlot', num2str(LayerSize)),'jpg')
         ResultNN =  struct('InputFeatures',ReducedFeatures,'OutputValues',AllTargets,'NeuralNetwork',net,'Mean',mVal,'Variance',mVar,'PCATransformationMatrix',W,'LayerSize',LayerSize);
          
         
