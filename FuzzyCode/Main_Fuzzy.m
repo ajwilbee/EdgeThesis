@@ -13,7 +13,7 @@ clc
 % ImageFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\images\test';
 % GroundTruthFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\groundTruth\test';
 % load('MatFileResults\cannySobelBDM_DefaultSettings_AllGT.mat');
-ImageSaveFolderName = 'Fuzzy_PSO_AllImages_FilterGenerationGTBusy'; % make this ahead of time
+ImageSaveFolderName = 'TestingFuzzy'; % make this ahead of time
 ImageSaveFolder = [pwd '\' ImageSaveFolderName];
 mkdir(ImageSaveFolder);
 load('CannySobelBDM\CannySobelBDMTrainingNNBusy.mat')
@@ -23,7 +23,7 @@ load('CannySobelBDM\CannySobelBDMTrainingNNBusy.mat')
 % GroundTruthFiles = dir(fullfile(GroundTruthFilesPath, '*.mat'));
 
 %
-iteration =100;
+iteration =1;
 
     %this array of cells will contain: 1) the image,
     %                                  2) its ground truth,
@@ -54,7 +54,7 @@ iteration =100;
     AllFilters = cell(size(AllImages,1),1);
     
     % this is greedy and will need to be revisited
-    for i=1:1:size(AllImages,1)
+    for i=1:1%size(AllImages,1)
         %starting point for PSO: 1-> division offset 2-> fuzzy boundery 3-> CA rule
         parameters = [60 0.3 23;79 1 124; 105 0 321; 23 0.3 452;78 0.01 35;92 0.6 326;73 0.43 168;86 0.87 245; 112 0.54 410;124 0.67 203;
                   51 0.23 123;69 0.89 24; 101 0.34 121; 39 0.4 45;71 0.19 355;97 0.73 56;134 0.3 18;35 0.71 45;68 0.47 386;82 0.712 178;];

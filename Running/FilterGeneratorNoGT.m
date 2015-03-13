@@ -1,32 +1,31 @@
-function [ResultingEdgeImage,BetterPerformance] = FuzzyRunNoGT(ResultNN,AllFilters,inputdirName,dirName)
-%fuzzy System
-% takes the NN from the fuzzy system and applies it to input images
+function [ResultingEdgeImage,BetterPerformance] = FilterGeneratorNoGT(ResultNN,inputDir,dirName)
+%Non-fuzzy System
+% takes the NN from the Non-fuzzy system and applies it to input images
 % takes the File Folder with input images (only handles one folder at a
 % time) must be .jpg images
 % takes final save folder location
-% takes allFilter File from TrainFuzzySystem
-%
-% saves the resulting edge image to the save folder
+% 
+%saves the resulting edge image to the save folder
 
-ImageFilesPath = inputdirName;
+ImageFilesPath = inputDir;
 addpath(ImageFilesPath);
-mkdir(dirName);
 ImageFiles = dir(fullfile(ImageFilesPath, '*.jpg'));
     clear AllImages AllTargetsCell
     count = 1;
     clear AllImages AllTargetsCell names SobelEdgeImage SobelBDM CannyEdgeImage CannyBDM
+    
     %read in all of the images and create the standard edge images for them
-    for x = 1: size(ImageFiles,1)
-            
+    for x = 1:size(ImageFiles,1)
+        
         im = imread(ImageFiles(x).name);
         im = imresize(im,[481,481]);
         AllImages{count} = im;               
         names{count} = ImageFiles(x).name(1:end-4);               
-        SobelEdgeImage{count} = edge(rgb2gray(im),'sobel');               
+        SobelEdgeImage{count} = edge(rgb2gray(im),'sobel');              
         CannyEdgeImage{count} = edge(rgb2gray(im),'canny');
         PrewittEdgeImage{count} = edge(rgb2gray(im),'prewitt');
         RobertsEdgeImage{count} = edge(rgb2gray(im),'roberts');
-        LogEdgeImage{count} = edge(rgb2gray(im),'log');                
+        LogEdgeImage{count} = edge(rgb2gray(im),'log');               
         count = count +1;
         
     end
@@ -44,7 +43,7 @@ ImageFiles = dir(fullfile(ImageFilesPath, '*.jpg'));
     
     %Reduce the dimentionality of the feature set 
     ReducedFeatures =((AllFeatures'-meanMat)*W)';
-
+    
     % get the filter index from the network
     output = net(ReducedFeatures);
     [~,tester] = max(output);
@@ -54,18 +53,10 @@ ImageFiles = dir(fullfile(ImageFilesPath, '*.jpg'));
     %filter and then display all edge images with GT and original
     figure(1);title('Edge Image Comparison');
     for x = 1:size(AllImages,2)
+        Filter = bin2dec(num2str(output(:,x))');%get the filter which is binary incoded
         
-        FilterIndex =output(x)';%get number for CA filter to use
-        
-        %code to ensure a filter is selected if there is a glitch in
-        %indexing, should not happen any more but left to ensure
-        if(FilterIndex > length(AllFilters))
-           FilterIndex = length(AllFilters);
-        end
-        Filter = AllFilters{FilterIndex};
-        
-        [EdgeImage] = fuzzy_filtering(double(rgb2gray(AllImages{x})), Filter(1:3));
-
+        [EdgeImage] = Non_Fuzzy_Filtering(double(im2bw(rgb2gray(AllImages{x}),0.4)), Filter);
+                
         subplot(3,3,[1:3]);imshow(AllImages{x});title(['Original Image ' names(x)]);
         subplot(3,3,4);imshow(EdgeImage);title(['Test']);
         subplot(3,3,5);imshow( SobelEdgeImage{x});title(['Sobel']);
@@ -82,10 +73,8 @@ ImageFiles = dir(fullfile(ImageFilesPath, '*.jpg'));
             'RobertsEdgeImage',RobertsEdgeImage{x},...
             'LogEdgeImage',LogEdgeImage{x},...
             'Filter',Filter );
-        %if BDM is lower than the performance was better
     end
     
-    save([dirName '/_ResultingEdgeImages' ], 'ResultingEdgeImage');
-    
+    save([dirName '/_ResultingEdgeImages'], 'ResultingEdgeImage');
 end
 
