@@ -8,7 +8,7 @@ function [ResultingEdgeImage,BetterPerformance] = FuzzyRun(ResultNN,AllFilters,d
 GT = 1;
 
 
-
+mkdir(dirName)
 
 load('C:\Users\ajw4388\Documents\MATLAB\Thesis_Code\CannySobelBDM\CannySobelBDMTestingNNSparse.mat')  
     clear AllImages AllTargetsCell

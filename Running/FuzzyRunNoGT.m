@@ -10,13 +10,15 @@ function [ResultingEdgeImage,BetterPerformance] = FuzzyRunNoGT(ResultNN,AllFilte
 
 ImageFilesPath = inputdirName;
 addpath(ImageFilesPath);
+mkdir(dirName);
 ImageFiles = dir(fullfile(ImageFilesPath, '*.jpg'));
     clear AllImages AllTargetsCell
     count = 1;
     clear AllImages AllTargetsCell names SobelEdgeImage SobelBDM CannyEdgeImage CannyBDM
-    for x = 1: 10%size(ImageFiles,1)
+    for x = 1: size(ImageFiles,1)
             
                 im = imread(ImageFiles(x).name);
+                im = imresize(im,[481,481]);
                 AllImages{count} = im;
                 
                 names{count} = ImageFiles(x).name(1:end-4);
@@ -57,7 +59,7 @@ ImageFiles = dir(fullfile(ImageFilesPath, '*.jpg'));
            FilterIndex = length(AllFilters);
         end
         Filter = AllFilters{FilterIndex};
-        [BDM, EdgeImage] = fuzzy_filtering(double(rgb2gray(AllImages{x})), Filter);
+        [EdgeImage] = fuzzy_filtering(double(rgb2gray(AllImages{x})), Filter(1:3));
 
         subplot(3,3,[1:3]);imshow(AllImages{x});title(['Original Image ' names(x)]);
         subplot(3,3,4);imshow(EdgeImage);title(['Test']);
@@ -78,7 +80,7 @@ ImageFiles = dir(fullfile(ImageFilesPath, '*.jpg'));
         %if BDM is lower than the performance was better
     end
     
-    save([dirName '/_ResultingEdgeImage_GT' num2str(GT)], 'ResultingEdgeImage');
+    save([dirName '/_ResultingEdgeImages' ], 'ResultingEdgeImage');
     
 end
 

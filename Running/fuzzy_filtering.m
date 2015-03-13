@@ -24,6 +24,6 @@ MaskCA = getMaskCA(parameters(end,1));
         end
     end
         t_Img=image;
-   fposition = BDM(t_Img,Img,'x', 2, 'euc');
+   
 
 end
