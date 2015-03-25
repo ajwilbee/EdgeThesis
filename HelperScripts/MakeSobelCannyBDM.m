@@ -1,6 +1,6 @@
 % make a quick comparison data set with default sobel and canny
 ImageFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\images\AaronTestingNN';
-GroundTruthFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\groundTruth\AaronTestingNNBusy';
+GroundTruthFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\groundTruth\AaronTestingNN';
 addpath(ImageFilesPath,GroundTruthFilesPath);
 ImageFiles = dir(fullfile(ImageFilesPath, '*.jpg'));
 GroundTruthFiles = dir(fullfile(GroundTruthFilesPath, '*.mat'));

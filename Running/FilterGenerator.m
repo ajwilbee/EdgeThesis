@@ -1,10 +1,10 @@
-function [ResultingEdgeImage,BetterPerformance] = FilterGenerator(ResultNN,dirName,FilterGeneratorValues)
+function [ResultingEdgeImage,BetterPerformance] = FilterGenerator(ResultNN,dirName,FilterGeneratorValues,CSBDMFileLocation)
 % need the Proper CannySobelBDMFile to get the images from
 % need the correct ResultNNValiation file to get the ResultNN struct
 
-load('C:\Users\ajw4388\Documents\MATLAB\Thesis_Code\CannySobelBDM\CannySobelBDMTestingNNSparse.mat')
+load(CSBDMFileLocation)
 mkdir(dirName)
-    for GT = 1:1%size(CannySobelBDM,2)
+    for GT = 1:size(CannySobelBDM,2)
         clear AllImages AllTargetsCell
         count = 1;
         clear AllImages AllTargetsCell names SobelEdgeImage SobelBDM CannyEdgeImage CannyBDM

@@ -10,7 +10,7 @@ GT = 1;
 
 mkdir(dirName)
 
-load('C:\Users\ajw4388\Documents\MATLAB\Thesis_Code\CannySobelBDM\CannySobelBDMTestingNNSparse.mat')  
+load('C:\Users\ajw4388\Documents\MATLAB\Thesis_Code\HelperScripts\CannySobelBDM\CannySobelBDMTestingNNBusy.mat')  
     clear AllImages AllTargetsCell
     count = 1;
     clear AllImages AllTargetsCell names SobelEdgeImage SobelBDM CannyEdgeImage CannyBDM

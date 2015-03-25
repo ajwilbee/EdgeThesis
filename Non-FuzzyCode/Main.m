@@ -17,8 +17,8 @@ mkdir(ImageSaveFolder);
 
 
 %%
-iteration =1;
-for i=1:1%length(CannySobelBDM)
+iteration =100;
+for i=1:length(CannySobelBDM)
 %starting point for PSO: 1-> division offset 2-> fuzzy boundery 3-> CA rule
     parameters = [23;124;321;452;35;326;168;245;410;203;
                   123;24;121;45;355;56;18;45;386;178;];%last parameter must be the CA neighborhood rule
