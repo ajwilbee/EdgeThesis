@@ -91,11 +91,11 @@ for GT = 1:5
 
             end
             
-            maxarray = [BDM,SobelBDM',CannyBDM',PrewittBDM',RobertsBDM',LogBDM'];
-            [A, maxarrayIndex] = max(maxarray');
-            maxarray = zeros(size(maxarray));
-            for c = 1:length(maxarrayIndex)
-               maxarray(c,maxarrayIndex(c)) = 1; 
+            minarray = [BDM,SobelBDM',CannyBDM',PrewittBDM',RobertsBDM',LogBDM'];
+            [A, maxarrayIndex] = min(minarray');
+            minarray = zeros(size(minarray));
+            for c = 1:length(minarrayIndex)
+               minarray(c,minarrayIndex(c)) = 1; 
             end
             
             BDM(end+1) = sum(BDM);
@@ -116,7 +116,7 @@ names1(end+1) = 0;
 
 out = [BDM SobelBDM' CannyBDM' PrewittBDM' RobertsBDM' LogBDM' Filters BetterPerformance' names1]; 
             csvwrite([dirName '\ResultPlotGT' num2str(GT) '.csv'],out);
-            csvwrite([dirName '\MaxArray' num2str(GT) '.csv'],maxarray);
+            csvwrite([dirName '\MaxArray' num2str(GT) '.csv'],minarray);
             clear SobelBDM
 clear CannyBDM
 clear PrewittBDM
@@ -125,4 +125,5 @@ clear LogBDM
 clear BDM
 clear Filters
 clear BetterPerformance
+clear minarray
 end
