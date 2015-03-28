@@ -65,8 +65,11 @@ for CSBDM = 1:2
 
                  performance = perform(net, output,AllTargets);
                  plotconfusion(AllTargets, output);
+                
                  dirName = [StorageLocation '\FinalResults_NNSize_' num2str(Sizes(sizeiter)),'_GroundTruth_' num2str(GT)];
+                 
                  mkdir(dirName)
+                 saveas(figure(1),strcat(dirName, '/RobustNNConfusionPlot', num2str(LayerSize)),'jpg')
                  ResultNN =  struct('InputFeatures',ReducedFeatures,'OutputValues',AllTargets,'NeuralNetwork',net,'Mean',mVal,'Variance',mVar,'PCATransformationMatrix',W,'LayerSize',LayerSize);
 
                  [ResultingEdgeImage,BetterPerformance] = FilterGenerator(ResultNN,dirName,FilterGeneratorValues,CSBDMFileLocation);

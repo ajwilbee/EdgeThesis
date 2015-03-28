@@ -6,7 +6,18 @@ function [ResultingEdgeImage,BetterPerformance] = FilterGeneratorNoGT(ResultNN,i
 % takes final save folder location
 % 
 %saves the resulting edge image to the save folder
-
+for CSBDM = 1:2
+    type = 'null';
+    if (CSBDM == 1)
+        dirName = 'NonFuzzySparseNoGTNN25';
+        
+        load('C:\Users\ajw4388\Documents\Thesis\Results\NonFuzzySystem\SparseBusy\Sparse\Run1\FinalResults_NNSize_25_GroundTruth_1\NeuralNetwork.mat')
+    else
+        dirName = 'NonFuzzyBusyNoGTNN25';
+        
+        load('C:\Users\ajw4388\Documents\Thesis\Results\NonFuzzySystem\SparseBusy\Busy\Run1\FinalResults_NNSize_25_GroundTruth_1\NeuralNetwork.mat')
+    
+    end
 ImageFilesPath = inputDir;
 addpath(ImageFilesPath);
 ImageFiles = dir(fullfile(ImageFilesPath, '*.jpg'));
@@ -45,9 +56,7 @@ ImageFiles = dir(fullfile(ImageFilesPath, '*.jpg'));
     ReducedFeatures =((AllFeatures'-meanMat)*W)';
     
     % get the filter index from the network
-    output = net(ReducedFeatures);
-    [~,tester] = max(output);
-    output = tester;
+output = net(ReducedFeatures)>0;
     
     %for all of the images perform the edge detection with the selected 
     %filter and then display all edge images with GT and original
@@ -83,5 +92,6 @@ ImageFiles = dir(fullfile(ImageFilesPath, '*.jpg'));
     end
     
     save([dirName '/_ResultingEdgeImages'], 'ResultingEdgeImage');
+end
 end
 
