@@ -73,7 +73,8 @@ ImageFiles = dir(fullfile(ImageFilesPath, '*.jpg'));
         subplot(3,3,7);imshow( PrewittEdgeImage{x});title(['Prewitt']);
         subplot(3,3,8);imshow( RobertsEdgeImage{x});title(['Roberts' ]);
         subplot(3,3,9);imshow( LogEdgeImage{x});title(['LoG' ]);
-        saveas(figure(1),strcat(dirName, '/', names{x}),'jpg')
+        saveas(figure(1),strcat(dirName, '/', names{x}),'jpg');
+        imwrite(EdgeImage,strcat(dirName, '/', names{x},'test','.png'))
         ResultingEdgeImage(x) = struct('EdgeImage', EdgeImage,...
             'Original',AllImages{x},'ImageName', names{x},...
             'SobelEdgeImage', SobelEdgeImage{x},...

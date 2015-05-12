@@ -9,38 +9,37 @@
 %remove empty filter counts
 clear remove
 GT = 1;
-for iter = 2:5
-    StorageLocation = ['C:\Users\ajw4388\Documents\Thesis\Results\FuzzySystem\SparseBusy\Fuzzy_PSO_AllImages_FilterGenerationGTBusy\Run', num2str(Sizes(iter)), 'TestSmallNN'];
+    StorageLocation = ['C:\Users\ajw4388\Documents\Thesis\Results\FuzzySystem\SparseBusy\Fuzzy_PSO_AllImages_FilterGenerationGTBusy\RunTestAddedImagesApril'];
     mkdir(StorageLocation);
 
 
-    % for x = 1:size(AllFilters,1)
-    %     
-    %     if isempty(AllFilters{x})
-    %       remove(x) = (1);
-    %     else
-    %       remove(x) = (0);
-    %     end
-    %     
-    % end
-    % remove = logical(remove);
-    % if(~isempty(remove))
-    %     AllFilters(remove,:) = [];
-    % end
-    % clear remove
-    % for x = 1:size(AllImages,1)
-    %     
-    %     if isempty(AllImages{x,3})
-    %       remove(x) = (1);
-    %     else
-    %         remove(x) = (0);
-    %     end
-    %     
-    % end
-    % remove = logical(remove);
-    % if(~isempty(remove))
-    %     AllImages(remove,:) = [];
-    % end
+    for x = 1:size(AllFilters,1)
+        
+        if isempty(AllFilters{x})
+          remove(x) = (1);
+        else
+          remove(x) = (0);
+        end
+        
+    end
+    remove = logical(remove);
+    if(~isempty(remove))
+        AllFilters(remove,:) = [];
+    end
+    clear remove
+    for x = 1:size(AllImages,1)
+        
+        if isempty(AllImages{x,3})
+          remove(x) = (1);
+        else
+            remove(x) = (0);
+        end
+        
+    end
+    remove = logical(remove);
+    if(~isempty(remove))
+        AllImages(remove,:) = [];
+    end
 
     for x = 1:size(AllFilters,1)
        AllFilters{x}(4) = x; 
@@ -193,7 +192,7 @@ for iter = 2:5
     end
     Features = FeatureExtractionFunc(InputImages);    
 
-    Sizes = [10 15 20 25 30 35 40 45 50 100];
+    Sizes = [15 20 25 30];
     for sizeiter = 1:length(Sizes)
         dirName = [StorageLocation '\FinalResults_NNSize_' num2str(Sizes(sizeiter)),'_GroundTruth_' num2str(GT)];
         mkdir(dirName)
@@ -202,5 +201,4 @@ for iter = 2:5
         [ResultingEdgeImage,BetterPerformance] = FuzzyRun(ResultNN,AllFilters,dirName);    
     end
     save([StorageLocation,'\ChosenFilters'], 'AllFilters')
-end
 

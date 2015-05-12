@@ -48,8 +48,11 @@ mkdir(dirName)
             figure(1);title('BDM Comparison');
             for x = 1:size(AllImages,2)
                 Filter = bin2dec(num2str(output(:,x))');%get number for CA filter to use
-                [BDM, EdgeImage] = fit_ness(double(im2bw(rgb2gray(AllImages{x}),0.4)),AllTargetsCell{x}, Filter);
-
+                EdgeImage = double(im2bw(rgb2gray(AllImages{x}),0.4));
+                for multifilter = 1:5
+                [BDM, EdgeImage] = fit_ness(EdgeImage,AllTargetsCell{x}, Filter);
+                end
+                
                 subplot(3,3,1);imshow(AllImages{x});title(['Original Image ' names(x)]);
         subplot(3,3,3);imshow(AllTargetsCell{x});title(['GroundTruth ' num2str(GT)]);
         subplot(3,3,4);imshow(EdgeImage);title(['Test BDM = ' num2str(BDM)]);
@@ -59,6 +62,7 @@ mkdir(dirName)
         subplot(3,3,8);imshow( RobertsEdgeImage{x});title(['Roberts BDM = ' num2str(RobertsBDM(x))]);
         subplot(3,3,9);imshow( LogEdgeImage{x});title(['Log BDM = ' num2str(LogBDM(x))]);
                 saveas(figure(1),strcat(dirName, '\', names{x}, 'GroundTruth_', num2str(GT)),'jpg')
+                
                 ResultingEdgeImage(x) = struct('BDM',BDM,'EdgeImage', EdgeImage,...
                     'GroundTruth',AllTargetsCell{x},'Original',AllImages{x},'ImageName', names{x},...
                     'SobelEdgeImage', SobelEdgeImage{x},'SobelBDM',SobelBDM(x),...

@@ -1,4 +1,4 @@
-function [ResultingEdgeImage,BetterPerformance] = FilterGeneratorNoGT(ResultNN,inputDir,dirName)
+function [ResultingEdgeImage,BetterPerformance] = FilterGeneratorNoGT(inputDir)
 %Non-fuzzy System
 % takes the NN from the Non-fuzzy system and applies it to input images
 % takes the File Folder with input images (only handles one folder at a
@@ -9,12 +9,12 @@ function [ResultingEdgeImage,BetterPerformance] = FilterGeneratorNoGT(ResultNN,i
 for CSBDM = 1:2
     type = 'null';
     if (CSBDM == 1)
-        dirName = 'NonFuzzySparseNoGTNN25';
-        
+        dirName = 'NonFuzzySparseNoGTNN25Run5Times';
+        mkdir('NonFuzzySparseNoGTNN25Run5Times');
         load('C:\Users\ajw4388\Documents\Thesis\Results\NonFuzzySystem\SparseBusy\Sparse\Run1\FinalResults_NNSize_25_GroundTruth_1\NeuralNetwork.mat')
     else
-        dirName = 'NonFuzzyBusyNoGTNN25';
-        
+        dirName = 'NonFuzzyBusyNoGTNN25Run5Times';
+        mkdir('NonFuzzyBusyNoGTNN25Run5Times');
         load('C:\Users\ajw4388\Documents\Thesis\Results\NonFuzzySystem\SparseBusy\Busy\Run1\FinalResults_NNSize_25_GroundTruth_1\NeuralNetwork.mat')
     
     end
@@ -63,9 +63,10 @@ output = net(ReducedFeatures)>0;
     figure(1);title('Edge Image Comparison');
     for x = 1:size(AllImages,2)
         Filter = bin2dec(num2str(output(:,x))');%get the filter which is binary incoded
-        
-        [EdgeImage] = Non_Fuzzy_Filtering(double(im2bw(rgb2gray(AllImages{x}),0.4)), Filter);
-                
+        EdgeImage = double(im2bw(rgb2gray(AllImages{x}),0.4));
+        for refilter = 1: 5
+            [EdgeImage] = Non_Fuzzy_Filtering(EdgeImage, Filter);
+        end  
         subplot(3,3,[1:3]);imshow(AllImages{x});title(['Original Image ' names(x)]);
         subplot(3,3,4);imshow(EdgeImage);title(['Test']);
         subplot(3,3,5);imshow( SobelEdgeImage{x});title(['Sobel']);

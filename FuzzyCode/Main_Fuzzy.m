@@ -13,17 +13,17 @@ clc
 % ImageFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\images\test';
 % GroundTruthFilesPath = 'C:\Users\ajw4388\Documents\Thesis\Berkely_Segmentation_Set\BSDS500\data\groundTruth\test';
 % load('MatFileResults\cannySobelBDM_DefaultSettings_AllGT.mat');
-ImageSaveFolderName = 'TestingFuzzy'; % make this ahead of time
+ImageSaveFolderName = 'TestingFuzzyAddedImages'; % make this ahead of time
 ImageSaveFolder = [pwd '\' ImageSaveFolderName];
 mkdir(ImageSaveFolder);
-load('CannySobelBDM\CannySobelBDMTrainingNNBusy.mat')
+load('CannySobelBDM\CannySobelBDMAddedImagesTrain.mat')
 % load('CannySobelBDM.mat')%all image files and ground truths come from here to maintain consistancy
 % addpath(ImageFilesPath,GroundTruthFilesPath);
 % ImageFiles = dir(fullfile(ImageFilesPath, '*.jpg'));
 % GroundTruthFiles = dir(fullfile(GroundTruthFilesPath, '*.mat'));
 
 %
-iteration =100;
+iteration =50;
 
     %this array of cells will contain: 1) the image,
     %                                  2) its ground truth,
